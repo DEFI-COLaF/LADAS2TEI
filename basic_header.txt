@@ -1,0 +1,29 @@
+<teiHeader>
+  <fileDesc>
+    <titleStmt>
+      <title>[title]</title>
+      <respStmt xml:id="resp1">
+               <resp>Encoding</resp>
+               <persName>Juliette Janès</persName>
+            </respStmt>
+    </titleStmt>
+    <publicationStmt>
+      <publisher>Corpus et Outils pour les langues de France - COLaF</publisher>
+      <date>[date_today]</date>
+      <availability>
+        <licence target="https://creativecommons.org/licenses/by/4.0/">CC-BY</licence>
+      </availability>
+    </publicationStmt>
+    <sourceDesc>
+      <bibl>
+      <title>[title]</title>
+        <author>[author]</author>
+        <date>[date]</date>
+        <publisher>[publisher]</publisher>
+      </bibl>
+    </sourceDesc>
+  </fileDesc>
+  <revisionDesc>
+  <change when="[date_today]" who="#resp1">Génération du XML</change>
+  </revisionDesc>
+</teiHeader>

@@ -1,0 +1,83 @@
+ 
+ <teiHeader>
+ <fileDesc>
+                    <titleStmt>
+                        <title type="main">[title]</title>
+                        <title type="collection">Picard Concours</title>
+                        <author>[author]</author>
+                        <respStmt>
+                            <resp>Encoding</resp>
+                            <persName xml:id="JJANES">
+                                <surname>Janès</surname>
+                                <forename>Juliette</forename>
+                                <idno type="orcid">0000-0002-8971-6173</idno>
+                            </persName>
+                        </respStmt>
+                        <principal>
+                            <persName xml:id="BSAGOT">
+                                <surname>Sagot</surname>
+                                <forename>Benoît</forename>
+                                <idno type="orcid">0000-0001-8957-9503</idno>
+                            </persName>
+                        </principal>
+                        <funder>Inria</funder>
+                    </titleStmt>
+                    <publicationStmt>
+                        <publisher ref="https://colaf.huma-num.fr/">Corpus et Outils pour
+                            les Langues de France (COLaF)</publisher>
+                        <date when="[date_today]"/>
+                        <availability>
+                            <licence target="https://creativecommons.org/licenses/by/4.0/"/>
+                        </availability>
+                        <idno>PIC_CONCOURS__[date]_[number]</idno>
+                    </publicationStmt>
+                    <sourceDesc>
+                        <bibl>
+                            <title>[title]</title>
+                            <author>[author]</author>
+                            <pubPlace>Amiens</pubPlace>
+                            <publisher>Agence régionale de la langue Picarde</publisher>
+                            <date when="[date]"/>
+                        </bibl>
+                    </sourceDesc>
+                </fileDesc>
+                <profileDesc>
+                    <langUsage>
+                        <language ident="met-oil-pic">
+                            <idno type="langue">met-oïl-pic</idno>
+                            <idno type="script">latin</idno>
+                            <name>Picard</name>
+                            <date>[date]</date>
+                            <location>
+                            <region>[region]</region>
+                            <country>[pays]</country>
+                            </location>
+                        </language>
+                    </langUsage>
+                    <textClass>
+                        <keywords>
+                            <term type="supergenre" rend="fiction">Fiction</term>
+                            <term type="genre" rend="fiction-prose">Prose</term>
+                        </keywords>
+                    </textClass>
+                </profileDesc>
+                <encodingDesc>
+                    <appInfo>
+                    <application ident="ladas-27">
+                    <label>Layout Analysis model LADAS</label>
+                    <ptr target="https://github.com/DEFI-COLaF/LADaS/"/>
+                    </application>
+                    <application ident="picocr-1">
+                    <label>OCr Picard Model</label>
+                    <ptr target="https://github.com/DEFI-COLaF/PicATR/releases/tag/picOCR"/>
+                    </application>
+                    <application ident="rtk">
+                    <label>Release the Kraken</label>
+                    <ptr target="https://github.com/PonteIneptique/rtk"/>
+                    </application>
+                    </appInfo>
+                    </encodingDesc>
+                <revisionDesc>
+                    <change when="[date_today]" who="#JJANES">Génération du XML</change>
+                </revisionDesc>
+            </teiHeader>
