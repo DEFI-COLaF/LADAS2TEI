@@ -4,8 +4,8 @@ from lxml import etree as ET
 from datetime import datetime
 import csv
 import re
+import pkf_resources
 
-xslt_file = 'ladas2tei/alto2XMLsimple.xsl'
 tei_mapping = {
     "AdvertisementZone": """<fw type="ad">""",
     "DigitizationArtefactZone": """<fw type="digital">""",
@@ -210,6 +210,7 @@ def update_block(liste_block, tag, liste_line, continued, cumul, is_list, zone_t
 def main(csv_metadata, pattern_header):
     if not os.path.exists('TEI'):
         os.makedirs('TEI')
+    xslt_file = pkg_resources.resource_filename("ladas2tei", "alto2XMLsimple.xsl")
     with open(csv_metadata, newline='', encoding="utf-8") as csv_file:
         reader=csv.DictReader(csv_file)
 
@@ -220,7 +221,8 @@ def main(csv_metadata, pattern_header):
             if pattern_header:
                 tei_header = fill_header(pattern_header, row)
             else:
-                tei_header = fill_header('./ladas2tei/basic_header.txt', row)
+                tei_header_path = pkg_resources.resource_filename("ladas2tei", "basic_header.txt")
+                tei_header = fill_header(tei_header_path, row)
             root_xml.append(ET.fromstring(tei_header))
             liste_block = ["<text><body><div>"]
             n = 0
