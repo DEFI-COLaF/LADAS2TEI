@@ -4,7 +4,7 @@ from lxml import etree as ET
 from datetime import datetime
 import csv
 import re
-import pkf_resources
+import pkg_resources
 
 tei_mapping = {
     "AdvertisementZone": """<fw type="ad">""",
