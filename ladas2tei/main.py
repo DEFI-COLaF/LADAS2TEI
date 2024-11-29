@@ -234,8 +234,8 @@ def main(csv_metadata, pattern_header):
             block_str = "".join(liste_block)
             block_tei = ET.fromstring(block_str)
             root_xml.append(block_tei)
-
-            with open(f'TEI/{row["file_name"]}.xml', "w") as f:
+            output=os.path/basename(row["file_name"])
+            with open(f'TEI/{output}.xml', "w") as f:
                 f.write(ET.tostring(root_xml, encoding='unicode', pretty_print=True))
         
 if __name__ == "__main__":
