@@ -1,4 +1,2 @@
-lxml
-re
-csv
-click
+click==8.1.7
+lxml==5.3.0
