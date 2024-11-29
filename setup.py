@@ -12,6 +12,7 @@ setup(
     url='https://github.com/DEFI-COLaF/LADAS2TEI',
     license='MIT',  # Adjust as needed
     packages=['ladas2tei'],
+    include_package_data = True,
     install_requires=[
         # List dependencies here, or use `requirements.txt`
     ],

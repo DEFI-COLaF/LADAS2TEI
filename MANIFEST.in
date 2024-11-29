@@ -1,0 +1,2 @@
+include ladas2tei/*.txt
+include ladas2tei/*.xsl
