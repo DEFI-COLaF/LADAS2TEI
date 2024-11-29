@@ -5,7 +5,7 @@ from datetime import datetime
 import csv
 import re
 
-xslt_file = 'alto2XMLsimple.xsl'
+xslt_file = 'ladas2tei/alto2XMLsimple.xsl'
 tei_mapping = {
     "AdvertisementZone": """<fw type="ad">""",
     "DigitizationArtefactZone": """<fw type="digital">""",
@@ -52,6 +52,35 @@ cumulative = {
         "FigureZone-Head":"FigureZone",
         "TableZone-Head": "TableZone",
     } 
+
+
+def process_document(directory, doc, liste_block, xslt_file, n):
+    """
+    Processes each document in the directory, applies XSLT, and generates the corresponding TEI structure.
+    
+    :param doc: The document to be processed.
+    :param xslt_file: Path to the XSLT file.
+    :param directory: Directory containing the XML files.
+    :param tei_mapping: Mapping for TEI elements.
+    :param cumulative: Cumulative zones dictionary.
+    """
+    transformed_tree = apply_xslt(directory+'/'+doc, xslt_file)
+    if transformed_tree:
+        root = transformed_tree.getroot()
+        liste_zone = root.findall('region')
+        liste_block.append(f"<pb n='{n}' facs='{doc}'/>")
+        n_zone = 0
+        for zone in liste_zone:
+            zone_type = zone.attrib.get('type', None)
+            tag = tei_mapping.get(zone_type, '<ab>')
+            continued = "Continued" in zone_type if zone_type else False
+            cumul = cumulative.get(zone_type, False) if zone_type else False
+            is_list = True if isinstance(tag, list) else False
+            liste_line = process_line(zone, tag,n, n_zone)
+            liste_block = update_block(liste_block, tag,liste_line, continued, cumul, is_list, zone_type)
+            n_zone+=1
+    return liste_block
+
 
 def fill_header(template_file, metadata):
     with open(template_file, 'r', encoding='utf-8') as file:
@@ -172,40 +201,18 @@ def update_block(liste_block, tag, liste_line, continued, cumul, is_list, zone_t
     
     return liste_block
 
-def process_document(directory, doc, liste_block, xslt_file, n):
-    """
-    Processes each document in the directory, applies XSLT, and generates the corresponding TEI structure.
-    
-    :param doc: The document to be processed.
-    :param xslt_file: Path to the XSLT file.
-    :param directory: Directory containing the XML files.
-    :param tei_mapping: Mapping for TEI elements.
-    :param cumulative: Cumulative zones dictionary.
-    """
-    transformed_tree = apply_xslt(directory+'/'+doc, xslt_file)
-    if transformed_tree:
-        root = transformed_tree.getroot()
-        liste_zone = root.findall('region')
-        liste_block.append(f"<pb n='{n}' facs='{doc}'/>")
-        n_zone = 0
-        for zone in liste_zone:
-            zone_type = zone.attrib.get('type', None)
-            tag = tei_mapping.get(zone_type, '<ab>')
-            continued = "Continued" in zone_type if zone_type else False
-            cumul = cumulative.get(zone_type, False) if zone_type else False
-            is_list = True if isinstance(tag, list) else False
-            liste_line = process_line(zone, tag,n, n_zone)
-            liste_block = update_block(liste_block, tag,liste_line, continued, cumul, is_list, zone_type)
-            n_zone+=1
-    return liste_block
+
 
     
 @click.command()
 @click.argument('csv_metadata', type=str)
 @click.argument('pattern_header', type=str, required=False)
-def ladas2tei(csv_metadata, pattern_header):
+def main(csv_metadata, pattern_header):
+    if not os.path.exists('TEI':
+        os.makedirs('TEI')
     with open(csv_metadata, newline='', encoding="utf-8") as csv_file:
         reader=csv.DictReader(csv_file)
+
 
         for row in reader:
             print(f'Traitement de {row["file_name"]}')
@@ -213,7 +220,7 @@ def ladas2tei(csv_metadata, pattern_header):
             if pattern_header:
                 tei_header = fill_header(pattern_header, row)
             else:
-                tei_header = fill_header('basic_header.txt', row)
+                tei_header = fill_header('./ladas2tei/basic_header.txt', row)
             root_xml.append(ET.fromstring(tei_header))
             liste_block = ["<text><body><div>"]
             n = 0
@@ -226,8 +233,8 @@ def ladas2tei(csv_metadata, pattern_header):
             block_tei = ET.fromstring(block_str)
             root_xml.append(block_tei)
 
-            with open(f'TEI/{row["file_name"].replace("picard_2021_sortie_rtk","")}.xml', "w") as f:
+            with open(f'TEI/{row["file_name"]}.xml', "w") as f:
                 f.write(ET.tostring(root_xml, encoding='unicode', pretty_print=True))
         
 if __name__ == "__main__":
-    ladas2tei()
+    main()
