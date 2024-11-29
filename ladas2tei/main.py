@@ -208,7 +208,7 @@ def update_block(liste_block, tag, liste_line, continued, cumul, is_list, zone_t
 @click.argument('csv_metadata', type=str)
 @click.argument('pattern_header', type=str, required=False)
 def main(csv_metadata, pattern_header):
-    if not os.path.exists('TEI':
+    if not os.path.exists('TEI'):
         os.makedirs('TEI')
     with open(csv_metadata, newline='', encoding="utf-8") as csv_file:
         reader=csv.DictReader(csv_file)
