@@ -26,6 +26,9 @@
             <xsl:attribute name="type">
                 <xsl:value-of select="key('label', @TAGREFS)/@LABEL"/>
             </xsl:attribute>
+            <xsl:attribute name="n">
+                <xsl:value-of select="translate(@ID, 'block_','')"/>
+            </xsl:attribute>
             <!-- Apply templates to nested TextLine elements -->
             <xsl:apply-templates select=".//alto:TextLine"/>
         </region>
@@ -37,6 +40,9 @@
             <!-- Again, use the key to lookup 'OtherTag' by ID -->
             <xsl:attribute name="type">
                 <xsl:value-of select="key('label', @TAGREFS)/@LABEL"/>
+            </xsl:attribute>
+            <xsl:attribute name="n">
+                <xsl:value-of select="translate(@ID, 'line_','')"/>
             </xsl:attribute>
             <!-- Apply templates to String and SP elements -->
             <xsl:apply-templates select="alto:String|alto:SP" />
