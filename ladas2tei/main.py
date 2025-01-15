@@ -8,28 +8,43 @@ import pkg_resources
 import json
 
 tei_mapping = {
+    "AdvertisementZone":{"tag":"fw", "att":{"type":"add"}},
+    "DigitalizationArtefactZone":{"tag":"fw", "att":{"type":"digital"}},
     "Division": {"tag":"div"},
-    "PageTitleZone": {"tag":"div", "att":{"type":"titlepage"}, "nested":{"tag":"p"}},
-    "MainZone-P": {"tag":"p"},
-    "MainZone-Sp":{"tag":"sp"},
+    "DropCapitalZone":{"tag":"hi", "att":{"rend":"dropcapital"}},
+    "FigureZone":{"tag":"figure", "att":{"type":"code"}},
+    "FigureZone-FigDesc":{"tag":"figDesc", "cumul":"FigureZone"},
+    "FigureZone-Head":{"tag":"head", "cumul":"FigureZone"},
+    "GraphicZone":{"tag":"figure"},
+    "GraphicZone-Decoration":{"tag":"figure", "att":{"type":"decoration"}},
+    "GraphicZone-Maths":{"tag":"figure", "att":{"type":"maths"}},
+    "GraphicZone-FigDesc":{"tag":"figDesc", "cumul":"GraphicZone"},
+    "GraphicZone-Head":{"tag":"head", "cumul":"GraphicZone"},
+    "GraphicZone-Part":{"tag":"figure", "cumul":"GraphicZone"},
+    "GraphicZone-TextualContent":{"tag":"p", "cumul":"GraphicZone"},
+    "MainZone-Date":{"tag":"dateline"},
+    "MainZone-Entry":{"tag":"div", "att":{"type":"entry"}, "nested":{"tag":"p"}},
+    "MainZone-Form":{"tag":"div", "att":{"type":"form"}, "nested":{"tag":"p"}},
     "MainZone-Head":{"tag":"head"},
     "MainZone-Lg":{"tag":"lg"},
-    "MainZone-Other":{"tag":"div", "att":{"type":"other"}},
-    "NumberingZone": {"tag":"fw","att":{"type":"numbering"}},
+    "List":{"tag":"list"},
+    "MainZone-Item":{"tag":"item", "cumul":"list"},
+    "MainZone-Other":{"tag":"div", "att":{"type":"other"}, "nested":{"tag":"p"}},
+    "MainZone-P": {"tag":"p"},
+    "MainZone-Signature":{"tag":"closer"}, "nested":{"tag":"signature"},
+    "MainZone-Sp":{"tag":"sp", "nested":{"tag":"p"}},
     "MarginTextZone-ManuscriptAddedum":{"tag":"fw", "att":{"type":"margin"}},
     "MarginTextZone":{"tag":"note"},
-    "GraphicZone-Decoration": {"tag":"figure","att":{"type":"decoration"}},
-
+    "NumberingZone": {"tag":"fw","att":{"type":"numbering"}},
+    "PageTitleZone": {"tag":"div", "att":{"type":"titlepage"}, "nested":{"tag":"p"}},
+    "PageTitleZone-Index":{"tag":"div", "att":{"type":"toc"}, "nested":{"tag":"p"}},
+    "QuiremarkZone":{"tag":"fw", "att":{"type":"quiremark"}},
+    "RunningTitleZone":{"tag":"fw", "att":{"type":"runningtitle"}},
+    "StampZone":{"tag":"fw", "att":{"type":"stamp"}},
+    "StampZone-Sticker":{"tag":"fw", "att":{"type":"sticker"}},
+    "TableZone":{"tag":"figure", "att":{"type":"table"}},
+    "TableZone-Head":{"tag":"head"}, "cumul":"TableZone"
 }
-cumulative = {
-        "GraphicZone-FigDesc": "GraphicZone",
-        "GraphicZone-Head": "GraphicZone",
-        "GraphicZone-Part": "GraphicZone",
-        "GraphicZone-TextualContent": "GraphicZone",
-        "FigureZone-FigDesc" : "FigureZone",
-        "FigureZone-Head":"FigureZone",
-        "TableZone-Head": "TableZone",
-    } 
 
 
 def process_document(directory, doc, dict_block, n,n_zone, n_div):
@@ -48,11 +63,7 @@ def process_document(directory, doc, dict_block, n,n_zone, n_div):
             n_zone+=1
             n_interne+=1
             zone_type = zone.attrib.get('type', None)
-            tag = tei_mapping.get(zone_type, '<ab>')
-            continued = "Continued" in zone_type if zone_type else False
-            cumul = cumulative.get(zone_type, False) if zone_type else False
-            is_list = True if isinstance(tag, list) else False
-            liste_line = process_line(zone, tag)
+            liste_line = process_line(zone, zone_type)
             if zone_type == "PageTitleZone":
                 if 'PageTitleZone' in dict_block.keys():
                     dict_block[zone_type] = dict_block[f'{zone_type}']+liste_line
@@ -115,20 +126,21 @@ def apply_xslt(xml_file):
         return None
 
 
-def process_line(zone, tag):
+def process_line(zone, zone_type):
     """
     Convert the text contained in an ALTO zone into a list of line, 
     removing the line with too much noise
 
     :param zone: ALTO simplified zone
     :type zone: ElementTree
-    :param tag: Zone type
-    :type tag: str
+    :param zone_type: Zone type
+    :type zone_type: str
     :return: lines without noise
     :rtype: list of str
     """
     liste_line = []
     n_line=0
+    tag = tei_mapping.get(zone_type, '<ab>')
     for line in zone.findall("line"):
         n_line +=1
         text = line.text
@@ -171,6 +183,51 @@ def add_tei_line(liste_line, parent):
             lb.tail = line
 
 
+def get_element_info(key):
+    """
+    Retrieve all the informations on a specific zone type in the tei_mapping dictionary
+
+    :param key: key of the document dictionnary - zone type of the zone
+    :type key: str
+    :return tag: tei tag of the zone type
+    :return attributes: attributes info dictionary
+    :return nested: nested element info dictionary
+    :return cumul: cumul element info dictionary
+    rtype: str and dict
+    """
+    clean_key = re.sub(r'-\d+','',key)
+    clen_key = clean_key.replace("-Continued","")
+    element_info = tei_mapping.get(clean_key, "ab")
+    if element_info!='ab':
+        tag = element_info.get("tag")
+        attributes = element_info.get("att")
+        nested = element_info.get("nested")
+        cumul = element_info.get("cumul")
+    else:
+        tag = element_info
+        attributes = None
+        nested = None
+        cumul = None
+    return tag, attributes, nested, cumul
+
+
+def add_line_with_nested(nested, parent, value):
+    """
+    Verify if the element is nested, if so, add a new subelement, else add directly the textual content
+    :param nested: dictionary with element nested tag
+    :type nested: dict
+    :param parent: TEI parent element
+    :type parent: ElementTree
+    :return: ElementTree with new element and/or textual content
+    """
+    if nested:
+        element = nested.get("tag")
+        element = ET.SubElement(parent, element)
+        add_tei_line(value, element)
+    else:
+        add_tei_line(value, parent)
+
+
 def dict2tei(dict_block, body_xml):
     """
     Convert the nested dictionary into a xml body
@@ -184,44 +241,26 @@ def dict2tei(dict_block, body_xml):
     """
     for key,value in dict_block.items():
         # récupérer le dictionnaire du tag dans le dictionnaire de mapping, si pas de tag ab
-        clean_key = re.sub(r'-\d+','',key)
-        element_info = tei_mapping.get(clean_key, "ab")
-        if element_info!='ab':
-            # récupérer les dif info sur le tag
-            tag = element_info.get("tag")
-            attributes=element_info.get("att")
-            nested = element_info.get("nested")
-        
+        continued = "Continued" in key if key else False 
+        tag, attributes, nested, cumul = get_element_info(key)
+        child = ET.SubElement(body_xml,tag, attrib=attributes)
         # si l'élément traité a des enfants
         if isinstance(value, dict):
-            # créer la balise xml du enfant
-            child = ET.SubElement(body_xml, tag, attributes)
             # pour chaque key du sous dictionnaire
             for subkey, subvalue in value.items():
-                # nettoyer le numéro et récupérer le tag de l'élément enfant
-                clean_key = re.sub(r'-\d+','',subkey)
-                sub_element_info = tei_mapping.get(clean_key, "ab")
-                if sub_element_info!="ab":
-                    tag = sub_element_info.get("tag")
-                    attributes=sub_element_info.get("att")
-                    nested = sub_element_info.get("nested")
-                else:
-                    tag=sub_element_info
-                    attributes = None
+                tag, attributes, nested, cumul = get_element_info(subkey)
                 # créer la balise xml petit-enfant et ajouter le contenu textuel
                 grandchild = ET.SubElement(child,tag,attrib=attributes)
-                add_tei_line(subvalue, grandchild)
+                if isinstance(subvalue, dict):
+                    for subsubkey, subsubvalue in subvalue.items():
+                        tag, attributes, nested, cumul = get_element_info(subsubkey)
+                        greatgrandchild = ET.SubElement(grandchild, tag, attributes)
+                        add_line_with_nested(nested, greatgrandchild, subsubvalue)
+                else:
+                    add_line_with_nested(nested, grandchild, subvalue)
         # si l'élément traité n'a pas d'enfants
         elif isinstance(value, list):
-            # créer la balise enfant
-            child = ET.SubElement(body_xml,tag, attrib=attributes)
-            # si le tag est un tag nested (par exemple Titlepage prend une div puis un p avant le contenu textuel)
-            if nested:
-                p_element = ET.SubElement(child, "p")
-                add_tei_line(value, p_element)
-            else:
-                add_tei_line(value, child)
-                    
+            add_line_with_nested(nested, child, value)
             
     
 @click.command()
