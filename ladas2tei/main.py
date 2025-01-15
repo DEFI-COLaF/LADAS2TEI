@@ -43,8 +43,10 @@ def process_document(directory, doc, dict_block, n,n_zone, n_div):
     if transformed_tree:
         root = transformed_tree.getroot()
         liste_zone = root.findall('region')
+        n_interne = 0
         for zone in liste_zone:
             n_zone+=1
+            n_interne+=1
             zone_type = zone.attrib.get('type', None)
             tag = tei_mapping.get(zone_type, '<ab>')
             continued = "Continued" in zone_type if zone_type else False
@@ -57,20 +59,28 @@ def process_document(directory, doc, dict_block, n,n_zone, n_div):
                 else:
                     dict_block[zone_type] = liste_line
             else:
-                print(zone_type, n_zone)
                 if n_div>0:
-                    print(list(dict_block[f'Division-{n_div}'].keys())[-1])
-                if zone_type =='MainZone-Head' and n_div>0 and 'MainZone-Head' not in list(dict_block[f'Division-{n_div}'].keys())[-1]:
+                    last_key = list(dict_block[f'Division-{n_div}'].keys())[-1]
+                if zone_type =='MainZone-Head' and n_div>0 and 'MainZone-Head' not in last_key:
                     n_div +=1
-                    print("test")
                     dict_block[f'Division-{n_div}'] = {}
                     dict_block[f'Division-{n_div}'][f'{zone_type}-{n_zone}']=liste_line
+                elif zone_type=='MainZone-P-Continued' and 'MainZone-P' in last_key:
+                    dict_block[f'Division-{n_div}'][last_key] = dict_block[f'Division-{n_div}'][last_key]+liste_line
                 elif f'Division-{n_div}' in dict_block.keys():
                     dict_block[f'Division-{n_div}'][f'{zone_type}-{n_zone}']=liste_line
                 else:
                     n_div +=1
                     dict_block[f'Division-{n_div}'] = {}
                     dict_block[f'Division-{n_div}'][f'{zone_type}-{n_zone}']=liste_line
+            if n_interne ==1:
+                # si il s'agit de la 1ere zone de la page, ajouter l'élément page break en 1ere position de la liste
+                last_key_first_level = list(dict_block.keys())[-1]
+                if isinstance(dict_block[last_key_first_level], dict):
+                    last_key_second_level = list(dict_block[last_key_first_level].keys())[-1]
+                    dict_block[last_key_first_level][last_key_second_level].insert(0,(n, doc.replace("xml","jpg")))
+                else:
+                    dict_block[last_key_first_level].insert(0,(n, doc.replace("xml","jpg")))
     return dict_block,n_zone, n_div
 
 
@@ -148,12 +158,17 @@ def add_tei_line(liste_line, parent):
     """
     n_line=0
     for line in liste_line:
-        n_line+=1
-        # création d'un élément XML lb et ajout comme enfant de l'élément parent
-        lb = ET.Element('lb', n=str(n_line))
-        parent.append(lb)
-        # ajout à la suite du lb du texte de la ligne
-        lb.tail = line
+        if isinstance(line, tuple):
+            n, doc = line
+            pb = ET.Element('pb', n=str(n), facs=doc)
+            parent.append(pb)
+        else:
+            n_line+=1
+            # création d'un élément XML lb et ajout comme enfant de l'élément parent
+            lb = ET.Element('lb', n=str(n_line))
+            parent.append(lb)
+            # ajout à la suite du lb du texte de la ligne
+            lb.tail = line
 
 
 def dict2tei(dict_block, body_xml):
