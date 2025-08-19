@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xml:lang="en">
+	<teiHeader>
+		<fileDesc>
+			<titleStmt>
+				<title>ODD for LADaS-Generated Data</title>
+				<author xml:id="sbeniere">
+					<idno type="orcid">0009-0003-1315-9969</idno>
+					<persName>Sarah Bénière</persName>
+					<affiliation>ALMAnaCH, INRIA</affiliation>
+				</author>
+				<author xml:id="jjanes">
+					<idno type="orcid">0000-0002-8971-6173</idno>
+					<persName>Juliette Janès</persName>
+					<affiliation>ALMAnaCH, INRIA</affiliation>
+				</author>
+				<author xml:id="tclerice">
+					<idno type="orcid">0000-0003-1852-9204</idno>
+					<persName>Thibault Clérice</persName>
+					<affiliation>ALMAnaCH, INRIA</affiliation>
+				</author>
+			</titleStmt>
+			<publicationStmt>
+				<publisher>INRIA</publisher>
+				<availability>
+					<licence target="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+						Attribution 4.0 International (CC BY 4.0)</licence>
+				</availability>
+			</publicationStmt>
+			<sourceDesc>
+				<p>Generated with <ref target="https://github.com/TEIC/romajs">RomaJS</ref> and customised
+					to best encode the documents generated using LADaS.</p>
+			</sourceDesc>
+		</fileDesc>
+		<revisionDesc>
+			<change when-iso="2025-08-19" who="#sbeniere">Updated element specifications and wrote
+				introduction.</change>
+			<change when-iso="2025-08-18" who="#sbeniere">Generated ODD + basic structure.</change>
+		</revisionDesc>
+	</teiHeader>
+	<text>
+		<body>
+			<div1 type="documentation">
+				<div2>
+					<head>Introduction</head>
+					<div3>
+						<!-- Provide link to the Annotation Guidelines once published online. -->
+						<head>About LADaS</head>
+						<p>LADaS, which stands for "Layout Analysis Dataset with SegmOnto," is both a controlled
+							vocabulary and a dataset. It was originally created as part of the <ref
+								target="https://colaf.huma-num.fr/en/">COLaF Project</ref> (INRIA), before being
+							extended to the <ref target="https://atrium-research.eu/">ATRIUM Project</ref>.</p>
+						<p>As a controlled vocabulary, LADaS aims at describing the layout of printed or
+							typewritten textual documents, and their related materials (e.g. posters,
+							manuscripts). It is derived from the preexisting <ref
+								target="https://segmonto.github.io/">SegmOnto controlled vocabulary</ref>, but
+							provides a more detailed description of the page layout by focusing on the graphical
+							representation of elements like paragraphs, headings, tbales, forms, or images.</p>
+						<p>The core of the LADaS model is to be able to reconstruct a document from its image
+							into a TEI file.</p>
+					</div3>
+					<div3>
+						<head>About this Document</head>
+						<p>This document presents the TEI customisation for LADaS-generated files. It provides
+							explanations for the mapping between the LADaS layout annotations for zone
+							segmentation and the TEI standard as described in the <ref
+								target="https://tei-c.org/release/doc/tei-p5-doc/en/html/index.html">
+								Guidelines</ref>.</p>
+						<p>Due to the inherent nature of LADaS, modules like "namesdates," through crucial for
+							the encoding of digital scholarly editions, are not included because they go beyond
+							the reconstruction of a document's layout.</p>
+					</div3>
+				</div2>
+
+				<div2>
+					<head>Types of Documents</head>
+					<!-- Reports, catalogues, novels, drama, correspondence, theses, scientific articles, magazines -->
+					<!-- Examples of <opener> and <closer> encodings for letters, specificities for drama -->
+					<p/>
+				</div2>
+
+				<div2>
+					<head>Encoding Choices</head>
+					<div3>
+						<head>Text Zones: Types of Paragraphs</head>
+						<p/>
+						<div4>
+							<head>Labelled Paragraphs</head>
+							<p/>
+						</div4>
+						<div4>
+							<head>Structured Paragraphs</head>
+							<p/>
+						</div4>
+						<div4>
+							<head>Styled Paragraphs</head>
+							<p/>
+						</div4>
+						<div4>
+							<head>Quoted Paragraphs</head>
+							<p/>
+						</div4>
+					</div3>
+
+					<div3>
+						<head>Encoding of "Continued" Sections</head>
+						<p/>
+					</div3>
+
+					<div3>
+						<head>Media</head>
+						<div4>
+							<head>Tables and Forms</head>
+							<!-- <figure type="table"> and <figure type="form"> -->
+						</div4>
+						<div4>
+							<head>Encoding of the LADaS "GraphicZone"</head>
+							<!-- <figure>, <graphic>, <head> -->
+						</div4>
+					</div3>
+				</div2>
+			</div1>
+
+
+			<div1 type="specifications">
+				<schemaSpec ident="ladas" start="TEI" prefix="tei_" targetLang="en" docLang="en">
+
+					<!-- LIST OF MODULES -->
+					<moduleRef key="tei"/>
+					<moduleRef key="header"/>
+					<moduleRef key="core"/>
+					<moduleRef key="textstructure"/>
+					<moduleRef key="drama"/>
+					<moduleRef key="msdescription"/>
+					<moduleRef key="transcr"/>
+					<moduleRef key="figures"/>
+					<moduleRef key="linking"/>
+
+					<!-- CHANGES BY ALPHABETICAL ORDER OF ELEMENTS  -->
+					<elementSpec ident="ab" mode="change">
+						<attList>
+							<attDef ident="type" mode="add" usage="rec">
+								<valList>
+									<valItem ident="digitisation-artefact"/>
+								</valList>
+							</attDef>
+							<attDef ident="rend" mode="add" usage="rec">
+								<valList>
+									<valItem ident="continued"/>
+								</valList>
+							</attDef>
+						</attList>
+					</elementSpec>
+
+					<elementSpec ident="figure" mode="change">
+						<attList>
+							<attDef ident="type" mode="add" usage="rec">
+								<valList>
+									<valItem ident="code"/>
+									<valItem ident="decoration"/>
+									<valItem ident="maths"/>
+								</valList>
+							</attDef>
+						</attList>
+					</elementSpec>
+
+					<elementSpec ident="fw" mode="change">
+						<attList>
+							<attDef ident="type" mode="add" usage="rec">
+								<valList mode="add" type="closed">
+									<valItem ident="running-title"/>
+									<valItem ident="quiremarks"/>
+								</valList>
+							</attDef>
+						</attList>
+					</elementSpec>
+
+					<elementSpec ident="note" mode="change">
+						<attList>
+							<attDef ident="type" mode="add" usage="rec">
+								<valList mode="add" type="closed">
+									<valItem ident="handwritten"/>
+								</valList>
+							</attDef>
+						</attList>
+					</elementSpec>
+
+					<elementSpec ident="p" mode="change">
+						<attList>
+							<attDef ident="rend" mode="add" usage="rec">
+								<valList mode="add" type="closed">
+									<valItem ident="styled"/>
+								</valList>
+							</attDef>
+							<attDef ident="type" mode="add" usage="rec">
+								<valList>
+									<valItem ident="labelled"/>
+									<valItem ident="structured"/>
+								</valList>
+							</attDef>
+						</attList>
+					</elementSpec>
+
+					<!-- SCHEMATRON RULES -->
+					<!-- <titlePage> or <div type="title-page"> -->
+					<!-- <bibl> or <p type="structured"> -->
+
+				</schemaSpec>
+			</div1>
+		</body>
+	</text>
+</TEI>
