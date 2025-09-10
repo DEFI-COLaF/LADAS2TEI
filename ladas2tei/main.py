@@ -6,52 +6,37 @@ import csv
 import re
 import pkg_resources
 
-tei_mapping = {
-    "AdvertisementZone": """<fw type="ad">""",
-    "DigitizationArtefactZone": """<fw type="digital">""",
-    "DropCapitalZone": """<hi rend="dropcapital">""",
-    "FigureZone": """<figure type="code">""",
-    "FigureZone-FigDesc": """<figDesc>""",
-    "FigureZone-Head": """<head>""",
-    "GraphicZone": """<figure>""",
-    "GraphicZone-Decoration": """<figure type="decoration">""",
-    "GraphicZone-FigDesc": "<figDesc>""",
-    "GraphicZone-Head": """<head>""",
-    "GraphicZone-Maths": """<figure type="maths">""",
-    "GraphicZone-Part": """<figure>""",
-    "GraphicZone-TextualContent":  """<p>""",
-    "MainZone-Date": """<dateline>""",
-    "MainZone-Entry": ["""<div type="entry">""","<p>"],
-    "MainZone-Form": ['<div type="form">', "<p>"],
-    "MainZone-Head": """<head>""",
-    "MainZone-Lg": '<lg>',
-    "MainZone-List": ['<list>', '<item>'],
-    "MainZone-Other": ['<div type="others">', "<p>"],
-    "MainZone-P": """<p>""",
-    "MainZone-P@CatalogueDesc": """<entry>""",
-    "MainZone-Signature": ["""<div type="letter">""", """<closer>""", """<signed>"""],
-    "MainZone-Sp": """<sp>""",
-    "MarginTextZone-ManuscriptAddendum": """<fw type="margin">""",
-    "MarginTextZone-Notes": """<note>""",
-    "NumberingZone": """<fw type="numbering">""",
-    "PageTitleZone": ["""<div type="titlepage">""",  """<p>"""],
-    "PageTitleZone-Index": ["""<div type="toc">""", """<p>"""],
-    "QuireMarkZone": """<fw type="quiremark">""",
-    "RunningTitleZone": """<fw type="runningtitle">""",
-    "StampZone": """<fw type="stamp">""",
-    "StampZone-Sticker": """<fw type="sticker">""",
-    "TableZone": """<figure type="table">""",
-    "TableZone-Head":  """<head>""",
-    }
-cumulative = {
-        "GraphicZone-FigDesc": "GraphicZone",
-        "GraphicZone-Head": "GraphicZone",
-        "GraphicZone-Part": "GraphicZone",
-        "GraphicZone-TextualContent": "GraphicZone",
-        "FigureZone-FigDesc" : "FigureZone",
-        "FigureZone-Head":"FigureZone",
-        "TableZone-Head": "TableZone",
-    } 
+tei_mapping_level_1 = {
+    "MainZone":{"tag":"div"},
+    "MarginTextZone":{"tag":"div"},
+    "TitlePageZone": {"tag":"div", "attrib":"type", "value":"titlePage"},
+    "GraphicZone": {"tag":"figure"},
+    "FigureZone":{"tag":"figure", "attrib":"type", "value":"code"},
+    "TableZone":{"tag":"figure", "attrib":"type", "value":"table"},
+    "FormZone":{"tag":"figure", "attrib":"type", "value":"form"},
+    "MusicZone": {"tag":"notatedMusic"}
+    "DigitisationArtefactZone":{"tag":"ab", "attrib":"type", "value":"digitisation-artefact"},
+    "NumberingZone":{"tag":"milestone"},
+    "RunningTitleZone":{"tag":"fw", "attrib":"type", "value":"runningTitle"},
+    "StampZone":{"tag":"stamp"},
+    "QuireMarks":{"tag":"fw", "attrib":"type", "value":"quiremarks"}}
+
+tei_mapping_level_2 = {
+    "Head":{"tag":"head"},
+    "HeadStructured":{"tag":"head", "attrib":"type", "value":"structured"},
+    "P":{"tag":"p"},
+    "PLabelled":{"tag":"p", "attrib":"rend","value":"labelled"},
+    "PStructured":{"tag":"p", "attrib":"rend", "value":"structured"},
+    "PQuoted":{"tag":"quote"},
+    "PStyled":{"tag":"p", "attrib":"rend", "value":"styled"},
+    "Item":{"tag":"item"},
+    "Lg":{"tag":"lg"},
+    "Dateline":{"tag":"dateline"},
+    "Address"{"tag":"address"},
+    "Signed:"{"tag":"signed"},
+    "Ab":{"tag":"ab"},
+    "Part":{"tag":"graphic"}
+}
 
 
 def process_document(directory, doc, liste_block, xslt_file, n):
