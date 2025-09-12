@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.loc.gov/standards/alto/ns-v4#"
+      xsi:schemaLocation="http://www.loc.gov/standards/alto/ns-v4# http://www.loc.gov/standards/alto/v4/alto-4-2.xsd">
+  <Description>
+    <MeasurementUnit>pixel</MeasurementUnit>
+    <sourceImageInformation>
+      <fileName>antaf_0066-4871_1980_num_15_1_T1_0127_0000.png</fileName>
+      
+    </sourceImageInformation>
+  </Description>
+  
+  <Tags>
+    <OtherTag ID="BT16575" LABEL="MarginTextZone" DESCRIPTION="block type MarginTextZone"/><OtherTag ID="BT16576" LABEL="DamageZone" DESCRIPTION="block type DamageZone"/><OtherTag ID="BT16577" LABEL="DigitizationArtefactZone" DESCRIPTION="block type DigitizationArtefactZone"/><OtherTag ID="BT16578" LABEL="DropCapitalZone" DESCRIPTION="block type DropCapitalZone"/><OtherTag ID="BT16579" LABEL="GraphicZone" DESCRIPTION="block type GraphicZone"/><OtherTag ID="BT16581" LABEL="NumberingZone" DESCRIPTION="block type NumberingZone"/><OtherTag ID="BT16582" LABEL="QuireMarksZone" DESCRIPTION="block type QuireMarksZone"/><OtherTag ID="BT16583" LABEL="RunningTitleZone" DESCRIPTION="block type RunningTitleZone"/><OtherTag ID="BT16584" LABEL="SealZone" DESCRIPTION="block type SealZone"/><OtherTag ID="BT16585" LABEL="StampZone" DESCRIPTION="block type StampZone"/><OtherTag ID="BT25448" LABEL="MainZone-Head" DESCRIPTION="block type MainZone-Head"/><OtherTag ID="BT25450" LABEL="GraphicZone-Head" DESCRIPTION="block type GraphicZone-Head"/><OtherTag ID="BT25451" LABEL="MarginTextZone-PLabelled" DESCRIPTION="block type MarginTextZone-PLabelled"/><OtherTag ID="BT25447" LABEL="MainZone-P" DESCRIPTION="block type MainZone-P"/>
+    <OtherTag ID="LT6926" LABEL="DefaultLine" DESCRIPTION="line type DefaultLine"/><OtherTag ID="LT6927" LABEL="HeadingLine" DESCRIPTION="line type HeadingLine"/><OtherTag ID="LT6928" LABEL="InterlinearLine" DESCRIPTION="line type InterlinearLine"/><OtherTag ID="LT10269" LABEL="default" DESCRIPTION="line type default"/>
+  </Tags>
+  
+  <Layout>
+    <Page WIDTH="3336"
+          HEIGHT="4408"
+          PHYSICAL_IMG_NR="0"
+          ID="eSc_dummypage_">
+      <PrintSpace HPOS="0"
+                  VPOS="0"
+                  WIDTH="3336"
+                  HEIGHT="4408">
+        
+        <TextBlock HPOS="311"
+                   VPOS="574"
+                   WIDTH="728"
+                   HEIGHT="93"
+                   ID="eSc_textblock_4e7d737f"
+                   TAGREFS="BT25448">
+          <Shape><Polygon POINTS="311 574 311 667 1039 667 1039 574"/></Shape>
+          
+          
+          <TextLine ID="eSc_line_d1271e93"
+                    TAGREFS="LT10269"
+                    BASELINE="320 636 1026 631" 
+                    HPOS="318"
+                    VPOS="597"
+                    WIDTH="708"
+                    HEIGHT="59">
+            <Shape><Polygon POINTS="320 636 320 656 1026 651 1026 631 1021 599 318 597 320 636"/></Shape>
+	    <String CONTENT="2. Lieu actuel de conservation"
+                    HPOS="318"
+                    VPOS="597"
+                    WIDTH="708"
+                    HEIGHT="59"
+                    WC="0.9925210356712342"></String>
+          </TextLine>
+
+          
+        </TextBlock>
+        
+        <TextBlock HPOS="317"
+                   VPOS="716"
+                   WIDTH="2476"
+                   HEIGHT="279"
+                   ID="eSc_textblock_dd8e80e4"
+                   TAGREFS="BT25447">
+          <Shape><Polygon POINTS="317 716 317 995 2793 995 2793 732"/></Shape>
+          
+          
+          <TextLine ID="eSc_line_92601651"
+                    TAGREFS="LT10269"
+                    BASELINE="426 754 2804 771" 
+                    HPOS="423"
+                    VPOS="707"
+                    WIDTH="2381"
+                    HEIGHT="81">
+            <Shape><Polygon POINTS="426 754 423 771 2799 788 2804 771 2802 732 426 707 426 754"/></Shape>
+	    <String CONTENT="Dépôt archéologique créé par nous en 1964, dans le jardin de la délégation de Testour, avec l’aide"
+                    HPOS="423"
+                    VPOS="707"
+                    WIDTH="2381"
+                    HEIGHT="81"
+                    WC="0.9905999791054498"></String>
+          </TextLine>
+
+          
+          
+          <TextLine ID="eSc_line_40bf47ed"
+                    TAGREFS="LT10269"
+                    BASELINE="320 817 2797 837" 
+                    HPOS="318"
+                    VPOS="778"
+                    WIDTH="2479"
+                    HEIGHT="84">
+            <Shape><Polygon POINTS="320 817 318 835 2792 862 2797 837 2794 798 320 778 320 817"/></Shape>
+	    <String CONTENT="des autorités locales et du Service des Monuments Historiques de Tunisie. Grâce à M. Mahmoud Zbiss,"
+                    HPOS="318"
+                    VPOS="778"
+                    WIDTH="2479"
+                    HEIGHT="84"
+                    WC="0.9917062409952575"></String>
+          </TextLine>
+
+          
+          
+          <TextLine ID="eSc_line_584c0ece"
+                    TAGREFS="LT10269"
+                    BASELINE="323 886 2797 898" 
+                    HPOS="320"
+                    VPOS="844"
+                    WIDTH="2477"
+                    HEIGHT="76">
+            <Shape><Polygon POINTS="323 886 320 903 2792 920 2797 898 2794 862 323 844 323 886"/></Shape>
+	    <String CONTENT="technicien supérieur à l’Institut National d’Archéologie et d’Art, ce dépôt, bien organisé, constitue déjà"
+                    HPOS="320"
+                    VPOS="844"
+                    WIDTH="2477"
+                    HEIGHT="76"
+                    WC="0.9873578041269068"></String>
+          </TextLine>
+
+          
+          
+          <TextLine ID="eSc_line_ae5c85b4"
+                    TAGREFS="LT10269"
+                    BASELINE="318 947 1452 957" 
+                    HPOS="315"
+                    VPOS="913"
+                    WIDTH="1137"
+                    HEIGHT="66">
+            <Shape><Polygon POINTS="318 947 315 969 325 977 328 977 330 977 333 977 563 967 602 979 604 979 607 979 1450 972 1452 957 1450 920 318 913 318 947"/></Shape>
+	    <String CONTENT="une sorte de musée lapidaire pour la région!"
+                    HPOS="315"
+                    VPOS="913"
+                    WIDTH="1137"
+                    HEIGHT="66"
+                    WC="0.9878198504447937"></String>
+          </TextLine>
+
+          
+        </TextBlock>
+        
+        <TextBlock HPOS="840"
+                   VPOS="449"
+                   WIDTH="1420"
+                   HEIGHT="93"
+                   ID="eSc_textblock_5af02692"
+                   TAGREFS="BT16583">
+          <Shape><Polygon POINTS="840 449 840 542 2260 542 2260 449"/></Shape>
+          
+          
+          <TextLine ID="eSc_line_634a7983"
+                    TAGREFS="LT10269"
+                    BASELINE="857 499 2258 504" 
+                    HPOS="854"
+                    VPOS="460"
+                    WIDTH="1404"
+                    HEIGHT="64">
+            <Shape><Polygon POINTS="2250 502 2226 460 857 460 857 499 854 519 2253 524 2258 504 2255 499 2250 502"/></Shape>
+	    <String CONTENT="SATURNE OU PLUTOT UNE DIVINITÉ AFRIÇAINE INCONNUE *"
+                    HPOS="854"
+                    VPOS="460"
+                    WIDTH="1404"
+                    HEIGHT="64"
+                    WC="0.9767689406871796"></String>
+          </TextLine>
+
+          
+        </TextBlock>
+        
+        <TextBlock HPOS="311"
+                   VPOS="1046"
+                   WIDTH="748"
+                   HEIGHT="81"
+                   ID="eSc_textblock_37ffd1e6"
+                   TAGREFS="BT25448">
+          <Shape><Polygon POINTS="311 1046 311 1127 1059 1127 1059 1046"/></Shape>
+          
+          
+          <TextLine ID="eSc_line_cd0e178a"
+                    TAGREFS="LT10269"
+                    BASELINE="320 1106 1050 1106" 
+                    HPOS="320"
+                    VPOS="1067"
+                    WIDTH="730"
+                    HEIGHT="59">
+            <Shape><Polygon POINTS="320 1106 320 1126 1050 1126 1050 1106 1050 1070 320 1067 320 1106"/></Shape>
+	    <String CONTENT="3. Caractéristiques (fig. 1 et 2)"
+                    HPOS="320"
+                    VPOS="1067"
+                    WIDTH="730"
+                    HEIGHT="59"
+                    WC="0.9995086736538831"></String>
+          </TextLine>
+
+          
+        </TextBlock>
+        
+        <TextBlock HPOS="311"
+                   VPOS="1184"
+                   WIDTH="2494"
+                   HEIGHT="222"
+                   ID="eSc_textblock_2f41963b"
+                   TAGREFS="BT25447">
+          <Shape><Polygon POINTS="311 1184 311 1406 2805 1406 2805 1184"/></Shape>
+          
+          
+          <TextLine ID="eSc_line_caf803cd"
+                    TAGREFS="LT10269"
+                    BASELINE="426 1221 2799 1241" 
+                    HPOS="423"
+                    VPOS="1175"
+                    WIDTH="2376"
+                    HEIGHT="83">
+            <Shape><Polygon POINTS="2789 1199 426 1175 426 1221 423 1239 2794 1258 2799 1241 2797 1207 2789 1199"/></Shape>
+	    <String CONTENT="La pierre, de forme rectangulaire, est dans un bon état de conservation. Taillée dans le même calcaire"
+                    HPOS="423"
+                    VPOS="1175"
+                    WIDTH="2376"
+                    HEIGHT="83"
+                    WC="0.9944187607084002"></String>
+          </TextLine>
+
+          
+          
+          <TextLine ID="eSc_line_f905a9b9"
+                    TAGREFS="LT10269"
+                    BASELINE="318 1285 2797 1305" 
+                    HPOS="315"
+                    VPOS="1246"
+                    WIDTH="2482"
+                    HEIGHT="76">
+            <Shape><Polygon POINTS="318 1285 315 1305 2792 1322 2797 1305 2794 1268 2486 1253 2483 1253 2228 1263 2179 1263 2162 1261 2089 1251 2086 1251 1905 1261 1866 1261 1797 1258 1464 1246 1462 1246 318 1246 318 1285"/></Shape>
+	    <String CONTENT="que celui des stèles d’Aïn-Tounga, elle était fichée en terre comme en témoigne sa partie inférieure, restée"
+                    HPOS="315"
+                    VPOS="1246"
+                    WIDTH="2482"
+                    HEIGHT="76"
+                    WC="0.9977335603340812"></String>
+          </TextLine>
+
+          
+          
+          <TextLine ID="eSc_line_4df9d479"
+                    TAGREFS="LT10269"
+                    BASELINE="318 1349 2792 1368" 
+                    HPOS="315"
+                    VPOS="1312"
+                    WIDTH="2477"
+                    HEIGHT="83">
+            <Shape><Polygon POINTS="318 1349 315 1371 2787 1395 2792 1368 2789 1332 318 1312 318 1349"/></Shape>
+	    <String CONTENT="non équarrie sur une hauteur de 35 centimètres. Après enquête, il s’est avéré que les deux trous de fixation,"
+                    HPOS="315"
+                    VPOS="1312"
+                    WIDTH="2477"
+                    HEIGHT="83"
+                    WC="0.9987394011538961"></String>
+          </TextLine>
+
+          
+        </TextBlock>
+        
+        <TextBlock HPOS="2693"
+                   VPOS="475"
+                   WIDTH="109"
+                   HEIGHT="83"
+                   ID="eSc_textblock_1a65e31f"
+                   TAGREFS="BT16581">
+          <Shape><Polygon POINTS="2693 475 2693 558 2802 558 2802 475"/></Shape>
+          
+          
+          <TextLine ID="eSc_line_7b56798d"
+                    TAGREFS="LT10269"
+                    BASELINE="2706 521 2802 514" 
+                    HPOS="2706"
+                    VPOS="472"
+                    WIDTH="96"
+                    HEIGHT="76">
+            <Shape><Polygon POINTS="2706 509 2706 521 2706 538 2723 548 2726 548 2728 548 2731 548 2802 528 2802 514 2794 472 2718 475 2706 509"/></Shape>
+	    <String CONTENT="127"
+                    HPOS="2706"
+                    VPOS="472"
+                    WIDTH="96"
+                    HEIGHT="76"
+                    WC="0.9996100862820944"></String>
+          </TextLine>
+
+          
+        </TextBlock>
+        
+        <TextBlock HPOS="1117"
+                   VPOS="3448"
+                   WIDTH="883"
+                   HEIGHT="96"
+                   ID="eSc_textblock_d570d833"
+                   TAGREFS="BT25450">
+          <Shape><Polygon POINTS="1117 3448 1117 3544 2000 3544 2000 3448"/></Shape>
+          
+          
+          <TextLine ID="eSc_line_9bcbe061"
+                    TAGREFS="LT10269"
+                    BASELINE="1129 3492 1954 3497" 
+                    HPOS="1126"
+                    VPOS="3462"
+                    WIDTH="828"
+                    HEIGHT="57">
+            <Shape><Polygon POINTS="1937 3465 1129 3462 1129 3492 1126 3511 1949 3519 1954 3497 1952 3484 1937 3465"/></Shape>
+	    <String CONTENT="FIG. 2. — Stèle de « Mzougha» (détail)."
+                    HPOS="1126"
+                    VPOS="3462"
+                    WIDTH="828"
+                    HEIGHT="57"
+                    WC="0.9798147474847189"></String>
+          </TextLine>
+
+          
+        </TextBlock>
+        
+        <TextBlock HPOS="298"
+                   VPOS="3669"
+                   WIDTH="2511"
+                   HEIGHT="161"
+                   ID="eSc_textblock_c79eb7e2"
+                   TAGREFS="BT25451">
+          <Shape><Polygon POINTS="298 3669 298 3830 2809 3830 2809 3669"/></Shape>
+          
+          
+          <TextLine ID="eSc_line_337e12e6"
+                    TAGREFS="LT10269"
+                    BASELINE="443 3712 2789 3732" 
+                    HPOS="440"
+                    VPOS="3673"
+                    WIDTH="2349"
+                    HEIGHT="78">
+            <Shape><Polygon POINTS="2775 3695 465 3673 443 3683 443 3712 440 3732 2784 3751 2789 3732 2787 3714 2775 3695"/></Shape>
+	    <String CONTENT="1 On voudra bien me permettre de remercier ici, pour leur bienveillant appui, MM. les Délégués (= Sous-préfets)"
+                    HPOS="440"
+                    VPOS="3673"
+                    WIDTH="2349"
+                    HEIGHT="78"
+                    WC="0.9938432620919269"></String>
+          </TextLine>
+
+          
+          
+          <TextLine ID="eSc_line_542767eb"
+                    TAGREFS="LT10269"
+                    BASELINE="311 3766 2782 3785" 
+                    HPOS="308"
+                    VPOS="3732"
+                    WIDTH="2474"
+                    HEIGHT="76">
+            <Shape><Polygon POINTS="311 3759 311 3766 308 3788 2777 3808 2782 3785 2780 3751 328 3732 311 3759"/></Shape>
+	    <String CONTENT="qui se sont succédé à Testour et de rendre hommage à l’activité de M. Mahmoud Zbiss, si attaché à sa « patria andalouse."
+                    HPOS="308"
+                    VPOS="3732"
+                    WIDTH="2474"
+                    HEIGHT="76"
+                    WC="0.9907031218836627"></String>
+          </TextLine>
+
+          
+        </TextBlock>
+        
+        <TextBlock HPOS="844"
+                   VPOS="1550"
+                   WIDTH="1380"
+                   HEIGHT="2007"
+                   ID="eSc_textblock_4382c37d"
+                   TAGREFS="BT16579">
+          <Shape><Polygon POINTS="844 1550 844 3557 2224 3557 2224 1550"/></Shape>
+          
+        </TextBlock>
+        
+
+        
+      </PrintSpace>
+    </Page>
+  </Layout>
+</alto>

@@ -7,6 +7,7 @@ import re
 import pkg_resources
 
 tei_mapping_level_1 = {
+    "MainZone":{"tag":"div", "cumul":True},
     "MarginTextZone":{"tag":"note", "cumul":True},
     "TitlePageZone": {"tag":"div", "attrib":{"type": "titlePage"}, "cumul":True},
     "GraphicZone": {"tag":"figure", "cumul":True},
@@ -73,7 +74,6 @@ def process_line(zone, xml_tag):
         lb.tail = text
 
 def get_content_xml(level, tei_mapping, zone):
-    print(level)
     level_dict = tei_mapping.get(level)
     attributes = level_dict.get("attrib")
     cumul = level_dict.get("cumul")
@@ -90,7 +90,6 @@ def main():
     root_xml = root_xml = ET.Element("TEI", xmlns="http://www.tei-c.org/ns/1.0")
     text_xml = ET.SubElement(root_xml, "text")
     body_xml = ET.SubElement(text_xml, "body")
-    div_xml = ET.SubElement(body_xml,"div")
     n_img = 0
     n_zone=0
     for xml_file in sorted(os.listdir('test')):
@@ -113,29 +112,35 @@ def main():
                         level2=False
                     
                     if level2:
-                        if "MainZone":
-                            child_level2, tag2, cumul2 = get_content_xml(level2, tei_mapping_level_2, zone)
-                            process_line(zone, child_level2)
-                            div_xml.append(child_level2)
-                        else:
-                            child_level1, tag1, cumul = get_content_xml(level1, tei_mapping_level_1, zone)
-                            child_level2, tag2, cumul2 = get_content_xml(level2, tei_mapping_level_2, zone)
-                            process_line(zone, child_level2)
-                            if cumul:
-                                last_node = div_xml[-1]
-                                if last_node.tag == level1:
-                                    last_node.append(child_level2)
+                        child_level1, tag1, cumul = get_content_xml(level1, tei_mapping_level_1, zone)
+                        child_level2, tag2, cumul2 = get_content_xml(level2, tei_mapping_level_2, zone)
+                        process_line(zone, child_level2)
+                        if cumul:
+                            last_node = body_xml[-1]
+
+                            print(level1, level2, last_node.tag)
+                            if last_node.tag == tag1 and level2 == 'Head':
+                                child_level1.append(child_level2)
+                                body_xml.append(child_level1)
+                            elif last_node.tag == tag1:
+                                last_node.append(child_level2)
                             else:
                                 child_level1.append(child_level2)
-                                div_xml.append(child_level1)
+                                body_xml.append(child_level1)
+                        else:
+                            child_level1.append(child_level2)
+                            body_xml.append(child_level1)
                     else:
                         child_level1, tag1, cumul = get_content_xml(level1, tei_mapping_level_1, zone)
                         process_line(zone, child_level1)
                         try:
-                            last_node=div_xml[-1]
-                            last_node.append(child_level1)
+                            last_node=body_xml[-1]
+                            if last_node.tag != tag1:
+                                last_node.append(child_level1)
+                            else:
+                                body_xml.append(child_level1)
                         except IndexError as e:
-                            div_xml.append(child_level1)
+                            body_xml.append(child_level1)
 
 
     with open(f'test.xml', "w") as f:
