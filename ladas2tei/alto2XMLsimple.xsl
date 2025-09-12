@@ -15,7 +15,10 @@
     <xsl:template match="/alto:alto">
         <doc>
             <!-- Apply templates to all TextBlock elements -->
-            <xsl:apply-templates select="//alto:TextBlock"/>
+            <xsl:apply-templates select="//alto:TextBlock">
+            <xsl:sort select="@VPOS" data-type="number" order="ascending"/>
+            <xsl:sort select="@HPOS" data-type="number" order="descending"/>
+            </xsl:apply-templates>
         </doc>
     </xsl:template>
     
@@ -27,7 +30,10 @@
                 <xsl:value-of select="key('label', @TAGREFS)/@LABEL"/>
             </xsl:attribute>
             <!-- Apply templates to nested TextLine elements -->
-            <xsl:apply-templates select=".//alto:TextLine"/>
+            <xsl:apply-templates select=".//alto:TextLine">
+            <xsl:sort select="@VPOS" data-type="number" order="ascending"/>
+                <xsl:sort select="@HPOS" data-type="number" order="ascending"/>
+                </xsl:apply-templates>
         </region>
     </xsl:template>
     

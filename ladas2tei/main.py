@@ -7,84 +7,52 @@ import re
 import pkg_resources
 
 tei_mapping_level_1 = {
-    "MainZone":{"tag":"div"},
-    "MarginTextZone":{"tag":"div"},
-    "TitlePageZone": {"tag":"div", "attrib":"type", "value":"titlePage"},
-    "GraphicZone": {"tag":"figure"},
-    "FigureZone":{"tag":"figure", "attrib":"type", "value":"code"},
-    "TableZone":{"tag":"figure", "attrib":"type", "value":"table"},
-    "FormZone":{"tag":"figure", "attrib":"type", "value":"form"},
-    "MusicZone": {"tag":"notatedMusic"}
-    "DigitisationArtefactZone":{"tag":"ab", "attrib":"type", "value":"digitisation-artefact"},
-    "NumberingZone":{"tag":"milestone"},
-    "RunningTitleZone":{"tag":"fw", "attrib":"type", "value":"runningTitle"},
+    "MarginTextZone":{"tag":"note", "cumul":True},
+    "TitlePageZone": {"tag":"div", "attrib":{"type": "titlePage"}, "cumul":True},
+    "GraphicZone": {"tag":"figure", "cumul":True},
+    "FigureZone":{"tag":"figure", "attrib":{"type":"code"}, "cumul":True},
+    "TableZone":{"tag":"figure", "attrib":{"type": "table"}, "cumul":True},
+    "FormZone":{"tag":"figure", "attrib":{"type":"form"}, "cumul":True},
+    "MusicZone": {"tag":"notatedMusic"},
+    "DigitisationArtefactZone":{"tag":"ab", "attrib":{"type":"digitisation-artefact"}},
+    "NumberingZone":{"tag":"fw", "attrib":{"type":"numbering"}},
+    "RunningTitleZone":{"tag":"fw", "attrib":{"type":"runningTitle"}},
     "StampZone":{"tag":"stamp"},
-    "QuireMarks":{"tag":"fw", "attrib":"type", "value":"quiremarks"}}
+    "QuireMarks":{"tag":"fw", "attrib":{"type": "quiremarks"}}}
 
 tei_mapping_level_2 = {
     "Head":{"tag":"head"},
-    "HeadStructured":{"tag":"head", "attrib":"type", "value":"structured"},
+    "HeadStructured":{"tag":"head", "attrib":{"type":"structured"}},
     "P":{"tag":"p"},
-    "PLabelled":{"tag":"p", "attrib":"rend","value":"labelled"},
-    "PStructured":{"tag":"p", "attrib":"rend", "value":"structured"},
+    "PLabelled":{"tag":"p", "attrib":{"rend":"labelled"}},
+    "PStructured":{"tag":"p", "attrib":{"rend":"structured"}},
     "PQuoted":{"tag":"quote"},
-    "PStyled":{"tag":"p", "attrib":"rend", "value":"styled"},
+    "PStyled":{"tag":"p", "attrib":{"rend":"styled"}},
     "Item":{"tag":"item"},
     "Lg":{"tag":"lg"},
     "Dateline":{"tag":"dateline"},
-    "Address"{"tag":"address"},
-    "Signed:"{"tag":"signed"},
+    "Address":{"tag":"address"},
+    "Signed":{"tag":"signed"},
     "Ab":{"tag":"ab"},
-    "Part":{"tag":"graphic"}
+    "Part":{"tag":"graphic"},
+    "Continued":{"tag":"p", "attrib":{"rend":"continued"}}
 }
 
 
-def process_document(directory, doc, liste_block, xslt_file, n):
-    """
-    Processes each document in the directory, applies XSLT, and generates the corresponding TEI structure.
-    
-    :param doc: The document to be processed.
-    :param xslt_file: Path to the XSLT file.
-    :param directory: Directory containing the XML files.
-    :param tei_mapping: Mapping for TEI elements.
-    :param cumulative: Cumulative zones dictionary.
-    """
-    transformed_tree = apply_xslt(directory+'/'+doc, xslt_file)
-    if transformed_tree:
-        root = transformed_tree.getroot()
-        liste_zone = root.findall('region')
-        liste_block.append(f"<pb n='{n}' facs='{doc}'/>")
-        n_zone = 0
-        for zone in liste_zone:
-            zone_type = zone.attrib.get('type', None)
-            tag = tei_mapping.get(zone_type, '<ab>')
-            continued = "Continued" in zone_type if zone_type else False
-            cumul = cumulative.get(zone_type, False) if zone_type else False
-            is_list = True if isinstance(tag, list) else False
-            liste_line = process_line(zone, tag,n, n_zone)
-            liste_block = update_block(liste_block, tag,liste_line, continued, cumul, is_list, zone_type)
-            n_zone+=1
-    return liste_block
 
 
-def fill_header(template_file, metadata):
-    with open(template_file, 'r', encoding='utf-8') as file:
-        template = file.read()
-    placeholders = re.findall(r'\[(\w+)\]', template)
-    replacements = { column: metadata.get(column, '') for column in placeholders}
-    replacements['date_today'] = datetime.today().date()
-    for placeholder, value in replacements.items():
-        template = template.replace(f'[{placeholder}]', str(value))
-    return template
 
-def apply_xslt(xml_file, xslt_file):
+
+def apply_xslt(xml_file):
     """
     Parses an XML file and applies an XSLT transformation.
     
     :param xml_file: Path to the input XML file.
-    :param xslt_file: Path to the XSLT file.
+    :type xml_file: str
     :return: Transformed XML tree or None in case of error.
+    :rtype: ElementTree
     """
+    xslt_file = "alto2XMLsimple.xsl"
     try:
         xml_tree = ET.parse(xml_file)
         xslt_tree = ET.parse(xslt_file)
@@ -95,133 +63,84 @@ def apply_xslt(xml_file, xslt_file):
         return None
 
 
-def process_line(zone, tag, n, n_zone):
-    """
-    Processes each zone in the XML and returns formatted lines.
-    
-    :param zone: The XML zone element.
-    :param tag: Start tag for the zone.
-    :param tag_end: End tag for the zone.
-    :param n: Page number.
-    :param n_line: Line number.
-    :return: List of lines with corresponding tags.
-    """
-    liste_line = []
+def process_line(zone, xml_tag):
     n_line=0
     for line in zone.findall("line"):
-        n_line += 1
+        n_line +=1
         text = line.text
-        if text:
-            text = text.replace("&", "et")
-        if tag == "MainZone-Lg":
-            liste_line.append(f"<l><lb n='{n}_{n_zone}_{n_line}'/> {text}</l>")
-        liste_line.append(f"<lb n='{n}_{n_zone}_{n_line}'/> " + (text or ""))
-    
-    return liste_line
+        lb = ET.Element('lb', n=str(n_line))
+        xml_tag.append(lb)
+        lb.tail = text
 
-
-def create_tag_end(tag):
-    if isinstance(tag, list):
-        tag = "".join(tag[::-1])
-    cleaned_string = re.sub(r'<(\w+)(\s+[^>]*)?>', r'<\1>', tag)
-    tag_end = cleaned_string.replace('<', '</')
-    return tag_end
-
-
-
-def update_block(liste_block, tag, liste_line, continued, cumul, is_list, zone_type):
-    """
-    Updates the block list by adding new content based on zone type, continued blocks, and cumulative blocks.
-    
-    :param liste_block: The list of blocks to be updated.
-    :param tag: Start tag for the zone.
-    :param tag_end: End tag for the zone.
-    :param liste_line: List of processed lines.
-    :param continued: Boolean indicating if the block is continued.
-    :param cumul: Boolean indicating if the block is cumulative.
-    :param n: Page number.
-    :param zone_type: Type of the zone.
-    :return: Updated list of blocks.
-    """
-    #if '<div type="titlepage">' in liste_block[-1] or '<div type="toc">' in liste_block[-1]:
-    #liste_block.append("<div>")
-    if continued:
-        for i in range(len(liste_block)-1, -1, -1):
-            last_block_zone = liste_block[i]
-            if 'fw' in last_block_zone or 'pb' in last_block_zone:
-                continue
-            break
-        pattern = r"<\/[^>]+>"
-        matches = re.findall(pattern, last_block_zone)
-        if matches:
-            last_tag_end = ''.join(matches)
-            modified_last_block_zone = re.sub(pattern, '', last_block_zone)
-            liste_block[i] = modified_last_block_zone
-            liste_block.append("".join(liste_line) + last_tag_end)
-        else:
-            print('pas de matches')
-
-    elif cumul or is_list:
-        last_block = liste_block[-1]
-        last_tag = re.search('</[a-zA-Z]*>$', last_block)
-        tag_end = create_tag_end(tag)
-        if cumul:
-            last_tag_needed = tei_mapping[cumulative[zone_type]]
-        else:
-            last_tag_needed = create_tag_end(tag[0])
-        if last_tag and last_tag.group()==last_tag_needed:
-            if is_list:
-                tag_end = create_tag_end(tag[1])
-                tag = tag[1]
-            modified_block = last_block.replace(last_tag.group(), "") + tag + "".join(liste_line) + tag_end + last_tag.group()
-            liste_block[-1] = modified_block
-        else:
-            liste_block.append("".join(tag) + "".join(liste_line) + tag_end)
-    elif (zone_type=="MainZone-Head" and any("<head>" in el for el in liste_block)): 
-        tag_end = create_tag_end(tag)
-        liste_block.append("</div><div>"+tag + "".join(liste_line)+tag_end)
+def get_content_xml(level, tei_mapping, zone):
+    print(level)
+    level_dict = tei_mapping.get(level)
+    attributes = level_dict.get("attrib")
+    cumul = level_dict.get("cumul")
+    tag = level_dict.get("tag")
+    if attributes:
+        child = ET.Element(tag, attrib=attributes)
     else:
-        tag_end = create_tag_end(tag)
-        liste_block.append(tag + "".join(liste_line) + tag_end)
-    
-    return liste_block
+        child = ET.Element(tag)
+    return child, tag, cumul
 
 
-
-    
 @click.command()
-@click.argument('csv_metadata', type=str)
-@click.argument('pattern_header', type=str, required=False)
-def main(csv_metadata, pattern_header):
-    if not os.path.exists('TEI'):
-        os.makedirs('TEI')
-    xslt_file = pkg_resources.resource_filename("ladas2tei", "alto2XMLsimple.xsl")
-    with open(csv_metadata, newline='', encoding="utf-8") as csv_file:
-        reader=csv.DictReader(csv_file)
+def main():
+    root_xml = root_xml = ET.Element("TEI", xmlns="http://www.tei-c.org/ns/1.0")
+    text_xml = ET.SubElement(root_xml, "text")
+    body_xml = ET.SubElement(text_xml, "body")
+    div_xml = ET.SubElement(body_xml,"div")
+    n_img = 0
+    n_zone=0
+    for xml_file in sorted(os.listdir('test')):
+        print(xml_file)
+        if 'xml' in xml_file and 'METS' not in xml_file:
+            n_img+=1
+            transformed_tree = apply_xslt('test/'+xml_file)
+            with open(f'test_transformed.xml', "w") as f:
+                f.write(ET.tostring(transformed_tree, encoding='unicode', pretty_print=True))
+            if transformed_tree:
+                root = transformed_tree.getroot()
+                liste_zone = root.findall('region')
+                for zone in liste_zone:
+                    zone_type = zone.attrib.get('type')
+                    if '-' in zone_type:
+                        level1 = re.findall(r'^([A-Za-z]*)-', zone_type)[0]
+                        level2 = re.findall(r'-([A-Za-z]*)', zone_type)[0]
+                    else:
+                        level1 = zone_type
+                        level2=False
+                    
+                    if level2:
+                        if "MainZone":
+                            child_level2, tag2, cumul2 = get_content_xml(level2, tei_mapping_level_2, zone)
+                            process_line(zone, child_level2)
+                            div_xml.append(child_level2)
+                        else:
+                            child_level1, tag1, cumul = get_content_xml(level1, tei_mapping_level_1, zone)
+                            child_level2, tag2, cumul2 = get_content_xml(level2, tei_mapping_level_2, zone)
+                            process_line(zone, child_level2)
+                            if cumul:
+                                last_node = div_xml[-1]
+                                if last_node.tag == level1:
+                                    last_node.append(child_level2)
+                            else:
+                                child_level1.append(child_level2)
+                                div_xml.append(child_level1)
+                    else:
+                        child_level1, tag1, cumul = get_content_xml(level1, tei_mapping_level_1, zone)
+                        process_line(zone, child_level1)
+                        try:
+                            last_node=div_xml[-1]
+                            last_node.append(child_level1)
+                        except IndexError as e:
+                            div_xml.append(child_level1)
 
 
-        for row in reader:
-            print(f'Traitement de {row["file_name"]}')
-            root_xml = ET.Element("TEI", xmlns="http://www.tei-c.org/ns/1.0")
-            if pattern_header:
-                tei_header = fill_header(pattern_header, row)
-            else:
-                tei_header_path = pkg_resources.resource_filename("ladas2tei", "basic_header.txt")
-                tei_header = fill_header(tei_header_path, row)
-            root_xml.append(ET.fromstring(tei_header))
-            liste_block = ["<text><body><div>"]
-            n = 0
-            for xml_file in sorted(os.listdir(row["file_name"])):
-                if 'xml' in xml_file and 'METS' not in xml_file:
-                    liste_block = process_document(row['file_name'], xml_file, liste_block, xslt_file, n)
-                    n+=1
-            liste_block.append("</div></body></text>")
-            block_str = "".join(liste_block)
-            block_tei = ET.fromstring(block_str)
-            root_xml.append(block_tei)
-            output=os.path.basename(row["file_name"])
-            with open(f'TEI/{output}.xml', "w") as f:
-                f.write(ET.tostring(root_xml, encoding='unicode', pretty_print=True))
-        
+    with open(f'test.xml', "w") as f:
+        f.write(ET.tostring(root_xml, encoding='unicode', pretty_print=True))
+
+
 if __name__ == "__main__":
     main()
