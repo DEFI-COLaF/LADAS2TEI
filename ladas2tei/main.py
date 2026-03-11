@@ -129,8 +129,8 @@ def process_line(zone, tag, n, n_zone):
         if text:
             text = text.replace("&", "et")
         if tag == "MainZone-Lg":
-            liste_line.append(f"<l><lb n='{n}_{n_zone}_{n_line}'/> {text}</l>")
-        liste_line.append(f"<lb n='{n}_{n_zone}_{n_line}'/> " + (text or ""))
+            liste_line.append(f"<l><lb n='{n_line}'/> {text}</l>")
+        liste_line.append(f"<lb n='{n_line}'/> " + (text or ""))
     
     return liste_line
 
@@ -210,7 +210,8 @@ def update_block(liste_block, tag, liste_line, continued, cumul, is_list, zone_t
 def main(csv_metadata, pattern_header):
     if not os.path.exists('TEI'):
         os.makedirs('TEI')
-    xslt_file = pkg_resources.resource_filename("ladas2tei", "alto2XMLsimple.xsl")
+    #xslt_file = pkg_resources.resource_filename("ladas2tei", "alto2XMLsimple.xsl")
+    xslt_file = "./ladas2tei/alto2XMLsimple.xsl"
     with open(csv_metadata, newline='', encoding="utf-8") as csv_file:
         reader=csv.DictReader(csv_file)
 
@@ -224,7 +225,7 @@ def main(csv_metadata, pattern_header):
                 tei_header_path = pkg_resources.resource_filename("ladas2tei", "basic_header.txt")
                 tei_header = fill_header(tei_header_path, row)
             root_xml.append(ET.fromstring(tei_header))
-            liste_block = ["<text><body><div>"]
+            liste_block = ['<text><body xml:lang="pica-1241"><div>']
             n = 0
             for xml_file in sorted(os.listdir(row["file_name"])):
                 if 'xml' in xml_file and 'METS' not in xml_file:
@@ -232,7 +233,15 @@ def main(csv_metadata, pattern_header):
                     n+=1
             liste_block.append("</div></body></text>")
             block_str = "".join(liste_block)
-            block_tei = ET.fromstring(block_str)
+            try:
+                block_tei = ET.fromstring(block_str)
+            except ET.XMLSyntaxError as e:
+                print(f"Error parsing XML for {row['file_name']}: {e}")
+                with open(f'TEI/{output}_error.xml',"a") as f:
+                    f.write(ET.tostring(root_xml, encoding='unicode', pretty_print=True))
+                    f.write(f"\n\n Problematic block\n{e}\n")
+                    f.write(block_str)
+                continue
             root_xml.append(block_tei)
             output=os.path.basename(row["file_name"])
             with open(f'TEI/{output}.xml', "w") as f:
