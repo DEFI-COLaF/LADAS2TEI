@@ -4,11 +4,7 @@ Conversion de fichiers ALTO XML annotes avec les labels LADaS vers un fichier
 TEI XML.
 
 Le programme lit les zones ALTO, les remet dans un ordre de lecture, puis cree
-le TEI avec `lxml`. Chaque page ALTO ajoute un changement de page :
-
-```xml
-<pb facs="nom_du_fichier.xml"/>
-```
+le TEI avec `lxml`. 
 
 ## Utilisation
 
