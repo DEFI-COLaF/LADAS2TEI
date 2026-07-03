@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>bourgey_12148-bpt6k9779838f_f60</title>
+                <respStmt>
+                    <resp>Encoding</resp>
+                    <persName xml:id="JJANES">
+                        <surname>Janès</surname>
+                        <forename>Juliette</forename>
+                        <idno type="orcid">0000-0002-8971-6173</idno>
+                    </persName>
+                </respStmt>
+            </titleStmt>
+            <publicationStmt>
+                <p>Extraction aléatoire d'une page et annotation manuelle</p>
+            </publicationStmt>
+            <sourceDesc>
+                <p>LADaS</p>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body>
+            <div>
+                <head>POLOGNE</head>
+                <p rend="structured">404 — POLOGNE. Insurrection de 1830-1831. 5 Zlotys. Ecusson
+                    couronné. R/. Valeur dans une couronne. (Craig 124). 1831. Arg. Superbe.</p>
+                <p rend="structured">405 — SUISSE. RÉPUBLIQUE DE GENÈVE. Thaler. Tête tourelée
+                    à g. R/. Inscription et millésime entre deux épis de blé. (Coraggioni 10 pl.
+                    XLVI), 1794. Arg. T.B.</p>
+                <p rend="structured"> 406 — NICOLAS Ier. Rouble. Aigle bicéphale couronné, tenant
+                    un globe et un sceptre. Rl. Valeur et date dans une couronne de laurier et de
+                    chêne. (Cr. 168). Saint-Pétersbourg. 1849. Arg. Superbe.</p>
+            </div>
+            <div>
+                <head> SUISSE</head>
+                <p rend="structured">407 — NICOLAS II. Rouble. Tête barbue à g. R/. Aigle
+                    bicéphale. (Yeo. 59), 1897. Arg. Superbe.</p>
+                <p rend="structured">408 — Autre exemplaire. (Yeo. 59). 1897. Arg. T.B.</p>
+                <p rend="structured"> 409 — ALEXANDRE III. Roubles. (Yeo. 46). 1888. 1892. —
+                    ALEXANDRE Ier. Polupol- tinnik. (CR. 121). Saint-Pétersbourg, 1802. — 50
+                    kopecks. (Yeo. 83). 1922. Ens. 4 p. Arg. Très Beau à Superbe.</p>
+                <p rend="structured"> 410 — Roubles. (Yeo. 90). 1924. — 300e anniversaire des
+                    ROMANOFF. — Rouble. (Yeo. 70). 1913. Ens. 3 p. Arg. Très Beau.</p>
+            </div>
+            <div>
+                <head>U. S. A.</head>
+
+                <fw type="numbering">411 —</fw>
+                <list>
+                    <item>A 20 Dollars. Tête diadémée de la Liberté. Carson City, 1882. Très
+                        Beau. Rare.</item>
+                    <item> B 20 Dollars. Même tête. Carson Cigy, 1890. Très Beau. Rare.</item>
+                    <item> C 20 Dollars. Même tête. 1904. Très Beau à Superbe.</item>
+                    <item> D 20 Dollars. Type de Saint-Gaudens. 1908. Très Beau.</item>
+                    <item> E 20 Dollars. Même type. 1927. Très Beau.</item>
+                    <item> F 20 Dollars. Même type. 1927. Très Beau.</item>
+                    <item> G 20 Dollars. Autre exemplaire. 1927. Très Beau.</item>
+                    <item> H 10 Dollars. Tête diadémée de la Liberté. 1880. Superbe.</item>
+                    <item> I 10 Dollars. Tête de Liberté portant la couronne d’Indien. Demver,
+                        1910, Très Beau.</item>
+                    <item> 9 5 Dollars. Tête diadémée de la Liberté. 1886. Très Beau.</item>
+                    <item> K 5 Dollars. Même tête. 1894. Très Beau.</item>
+                    <item> L 5 Dollars. 1895. Très Beau.</item>
+                    <item> M 5 Dollars. 1900. Très Beau.</item>
+                    <item> N 5 Dollars. 1901. Très Beau.</item>
+                </list>
+            </div>
+        </body>
+    </text>
+</TEI>

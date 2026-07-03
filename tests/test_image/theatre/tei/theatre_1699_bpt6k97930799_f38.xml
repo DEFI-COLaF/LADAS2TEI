@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>theatre_1699_bpt6k97930799_f38</title>
+                <respStmt>
+                    <resp>Encoding</resp>
+                    <persName xml:id="JJANES">
+                        <surname>Janès</surname>
+                        <forename>Juliette</forename>
+                        <idno type="orcid">0000-0002-8971-6173</idno>
+                    </persName>
+                </respStmt>
+            </titleStmt>
+            <publicationStmt>
+                <p>Extraction aléatoire d'une page et annotation manuelle</p>
+            </publicationStmt>
+            <sourceDesc>
+                <p>LADaS</p>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body>
+            <div>
+                <milestone unit="page" n="14"/>
+                <fw type="runningTitle">MYRTIL ET MELICERTE,</fw>
+                <sp>
+                    <speaker><lb/>DAPHNE'.</speaker>
+                    <lg>
+                        <l><lb/>Ah que de badinage!</l>
+                        <l><lb/>Tu n’as pas là-dessus raison.</l>
+                        <l><lb/>Chere Eroxene, à nôtre âge</l>
+                        <l><lb/>Doit-on fa ire cette façon?</l>
+                        <l><lb/>Tien, voy si ce Portrait te paroît agreable,</l>
+                        <l><lb/>Il est d’Athis ce Peintre inimitable,</l>
+                        <l><lb/>Et je trouve pour moy qu’il ressemble si fort.</l>
+                        <l><lb/>Tes yeux le connoistront d’abord.</l>
+                    </lg>
+                </sp>
+                <sp>
+                    <speaker><lb/>EROXENE.</speaker>
+                    <lg>
+                        <l><lb/>Je vay te contenter par une même voye,</l>
+                        <l><lb/>Et te payer de pareille monnoye.</l>
+                        <l><lb/>Athis, ce Peintre si fameux,</l>
+                        <l><lb/>Y renferma les traits de l’objet de mes vœux:</l>
+                        <l><lb/>Mais avec cette grace extrême,</l>
+                        <l><lb/>Et ces yeux qui font que je l’aime.</l>
+                    </lg>
+                </sp>
+                <sp>
+                    <speaker><lb/>DAPHNÉ' regardant la boëte de son Portrait..</speaker>
+                    <lg>
+                        <l><lb/>La boëte que je tiens icy</l>
+                        <l><lb/>Ressemble fort à celle-cy.</l>
+                    </lg>
+                </sp>
+                <sp>
+                    <speaker><lb/>EROXENE regardantles deuxxt:</speaker>
+                    <lg>
+                        <l><lb/>Il est vray, l’unc à l’autre entierement ressemble,</l>
+                        <l><lb/>Il les aura fait faire ensemble.</l>
+                    </lg>
+                </sp>
+                <sp>
+                    <speaker><lb/>DAPHNE'.</speaker>
+                    <lg>
+                        <l><lb/>Voyons si cet amas des plus vives couleurs</l>
+                        <l><lb/>Feta connoistre aux yeux le secret de nos cœurs.</l>
+                    </lg>
+                </sp>
+                <sp>
+                    <speaker><lb/>EROXENE.</speaker>
+                    <lg>
+                        <l><lb/>Voyons si ce brillant ouvrage</l>
+                        <l><lb/>Les fera reconnoistre au défaut du langage</l>
+                    </lg>
+                </sp>
+                <sp>
+                    <speaker><lb/>DAPHNE' ouvrant son Portrait.</speaker>
+                    <lg>
+                        <l><lb/>Mais icy tu te broüilles bien,</l>
+                        <l><lb/>Au lieu de ton Portrait tu m’as donné le mien.</l>
+                    </lg>
+                </sp>
+                <sp>
+                    <speaker><lb/>EROXENE.</speaker>
+                    <lg>
+                        <l><lb/>Je ne sçay pas comment j’ay fait la chose.</l>
+                    </lg>
+                </sp>
+                <sp>
+                    <speaker><lb/>DAPHNE' prenant le Portrait d’Eroxene</speaker>
+                    <lg>
+                        <l><lb/>Donne, de cette erreur ta réverie est cause.</l>
+                    </lg>
+                </sp>
+            </div>
+        </body>
+    </text>
+</TEI>

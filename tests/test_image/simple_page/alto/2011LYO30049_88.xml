@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.loc.gov/standards/alto/ns-v4#"
+      xsi:schemaLocation="http://www.loc.gov/standards/alto/ns-v4# http://www.loc.gov/standards/alto/v4/alto-4-2.xsd">
+  <Description>
+    <MeasurementUnit>pixel</MeasurementUnit>
+    <sourceImageInformation>
+      <fileName>2011LYO30049_88.jpg</fileName>
+    </sourceImageInformation>
+  </Description>
+  <Tags>
+    <OtherTag ID="BT16575" LABEL="MarginTextZone" DESCRIPTION="block type MarginTextZone"/><OtherTag ID="BT16576" LABEL="DamageZone" DESCRIPTION="block type DamageZone"/><OtherTag ID="BT16577" LABEL="DigitizationArtefactZone" DESCRIPTION="block type DigitizationArtefactZone"/><OtherTag ID="BT16578" LABEL="DropCapitalZone" DESCRIPTION="block type DropCapitalZone"/><OtherTag ID="BT16579" LABEL="GraphicZone" DESCRIPTION="block type GraphicZone"/><OtherTag ID="BT16581" LABEL="NumberingZone" DESCRIPTION="block type NumberingZone"/><OtherTag ID="BT16582" LABEL="QuireMarksZone" DESCRIPTION="block type QuireMarksZone"/><OtherTag ID="BT16583" LABEL="RunningTitleZone" DESCRIPTION="block type RunningTitleZone"/><OtherTag ID="BT16584" LABEL="SealZone" DESCRIPTION="block type SealZone"/><OtherTag ID="BT16585" LABEL="StampZone" DESCRIPTION="block type StampZone"/><OtherTag ID="BT32560" LABEL="MainZone-P" DESCRIPTION="block type MainZone-P"/><OtherTag ID="BT32561" LABEL="GraphicZone-Head" DESCRIPTION="block type GraphicZone-Head"/><OtherTag ID="BT32562" LABEL="MarginTextZone-PLabelled" DESCRIPTION="block type MarginTextZone-PLabelled"/><OtherTag ID="BT32563" LABEL="GraphicZone-Part" DESCRIPTION="block type GraphicZone-Part"/><OtherTag ID="BT32564" LABEL="MainZone-Continued" DESCRIPTION="block type MainZone-Continued"/><OtherTag ID="BT32565" LABEL="MainZone-Head" DESCRIPTION="block type MainZone-Head"/><OtherTag ID="BT32566" LABEL="MainZone-PStructured" DESCRIPTION="block type MainZone-PStructured"/><OtherTag ID="BT32567" LABEL="MainZone-PLabelled" DESCRIPTION="block type MainZone-PLabelled"/><OtherTag ID="BT32568" LABEL="MainZone-Signed" DESCRIPTION="block type MainZone-Signed"/><OtherTag ID="BT32569" LABEL="MainZone-Ab" DESCRIPTION="block type MainZone-Ab"/><OtherTag ID="BT32570" LABEL="Article" DESCRIPTION="block type Article"/><OtherTag ID="BT32571" LABEL="Article-Continued" DESCRIPTION="block type Article-Continued"/><OtherTag ID="BT32572" LABEL="MainZone-Lg" DESCRIPTION="block type MainZone-Lg"/><OtherTag ID="BT32573" LABEL="GraphicZone-Decoration" DESCRIPTION="block type GraphicZone-Decoration"/><OtherTag ID="BT32574" LABEL="MainZone-Dateline" DESCRIPTION="block type MainZone-Dateline"/><OtherTag ID="BT32575" LABEL="MainZone-Item" DESCRIPTION="block type MainZone-Item"/><OtherTag ID="BT32576" LABEL="TableZone" DESCRIPTION="block type TableZone"/><OtherTag ID="BT32577" LABEL="TableZone-Head" DESCRIPTION="block type TableZone-Head"/><OtherTag ID="BT32578" LABEL="MainZone-PStyled" DESCRIPTION="block type MainZone-PStyled"/>
+    <OtherTag ID="LT6926" LABEL="DefaultLine" DESCRIPTION="line type DefaultLine"/><OtherTag ID="LT6927" LABEL="HeadingLine" DESCRIPTION="line type HeadingLine"/><OtherTag ID="LT6928" LABEL="InterlinearLine" DESCRIPTION="line type InterlinearLine"/><OtherTag ID="LT13395" LABEL="default" DESCRIPTION="line type default"/>
+  </Tags>
+  <Layout>
+    <Page WIDTH="613"
+          HEIGHT="793"
+          PHYSICAL_IMG_NR="0"
+          ID="eSc_dummypage_">
+      <PrintSpace HPOS="0"
+                  VPOS="0"
+                  WIDTH="613"
+                  HEIGHT="793">
+        <TextBlock HPOS="102.0"
+                   VPOS="65.0"
+                   WIDTH="445.0"
+                   HEIGHT="136.0"
+                   ID="eSc_textblock_6f7a0b65"
+                   TAGREFS="BT32560">
+          <Shape><Polygon POINTS="102 65 102 201 547 201 547 65"/></Shape>
+          <TextLine ID="eSc_line_595baeb6"
+                    TAGREFS="LT13395"
+                    BASELINE="125 81 542 81" 
+                    HPOS="125"
+                    VPOS="69"
+                    WIDTH="417"
+                    HEIGHT="21">
+            <Shape><Polygon POINTS="539 70 535 70 531 69 526 69 319 69 315 69 310 69 306 69 301 69 297 69 293 69 288 69 284 69 279 69 275 69 271 69 266 69 262 69 257 69 253 69 248 69 244 69 240 69 235 69 231 69 226 69 222 69 218 69 213 69 209 69 204 69 200 69 196 69 191 69 187 69 182 69 178 69 174 69 169 69 165 69 160 69 156 69 152 69 147 69 143 69 138 69 134 69 130 69 125 69 125 81 125 89 542 90 542 81 542 71 539 70"/></Shape>
+            <String CONTENT="Pour la seconde partie du manuscrit, le filigrane, toujours avec le motif d’une"
+                    HPOS="125"
+                    VPOS="69"
+                    WIDTH="417"
+                    HEIGHT="21"
+                    WC="0.9940215832070459"></String>
+          </TextLine>
+          <TextLine ID="eSc_line_f827b3b0"
+                    TAGREFS="LT13395"
+                    BASELINE="107 103 542 102" 
+                    HPOS="107"
+                    VPOS="92"
+                    WIDTH="435"
+                    HEIGHT="18">
+            <Shape><Polygon POINTS="107 92 107 103 107 108 174 110 174 110 263 108 276 110 276 110 277 110 285 108 360 110 360 110 374 107 456 110 457 110 457 110 464 107 506 110 507 110 542 107 542 102 541 92 107 92 107 92"/></Shape>
+            <String CONTENT="cloche mais sans nom, montre que le papier est semblable aux exemplaires"
+                    HPOS="107"
+                    VPOS="92"
+                    WIDTH="435"
+                    HEIGHT="18"
+                    WC="0.9987972734702958"></String>
+          </TextLine>
+          <TextLine ID="eSc_line_08cfa33a"
+                    TAGREFS="LT13395"
+                    BASELINE="107 125 542 123" 
+                    HPOS="107"
+                    VPOS="110"
+                    WIDTH="435"
+                    HEIGHT="20">
+            <Shape><Polygon POINTS="107 125 107 129 542 130 542 123 540 110 537 112 486 110 486 110 472 112 457 110 456 110 456 110 449 112 351 110 350 110 350 110 349 110 345 113 318 111 318 111 307 113 221 111 221 111 210 113 179 111 178 111 166 113 153 111 153 111 152 111 152 111 148 113 107 113 107 125"/></Shape>
+            <String CONTENT="provenant de Cuny (1603), de Montbrison (1604) et de Valence¹ (1604). La"
+                    HPOS="107"
+                    VPOS="110"
+                    WIDTH="435"
+                    HEIGHT="20"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_2a596ec9"
+                    TAGREFS="LT13395"
+                    BASELINE="107 146 543 146" 
+                    HPOS="107"
+                    VPOS="132"
+                    WIDTH="436"
+                    HEIGHT="22">
+            <Shape><Polygon POINTS="107 146 107 154 543 154 543 146 543 133 107 132 107 146"/></Shape>
+            <String CONTENT="plupart de ces villes ont été fréquentées par Jeanne ou par ses proches², et donc"
+                    HPOS="107"
+                    VPOS="132"
+                    WIDTH="436"
+                    HEIGHT="22"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_399ca13b"
+                    TAGREFS="LT13395"
+                    BASELINE="107 168 542 167" 
+                    HPOS="107"
+                    VPOS="156"
+                    WIDTH="435"
+                    HEIGHT="21">
+            <Shape><Polygon POINTS="107 168 107 177 542 177 542 167 541 156 107 156 107 168"/></Shape>
+            <String CONTENT="tout ce qui peut se savoir avec certitude est que tout le papier est du premier"
+                    HPOS="107"
+                    VPOS="156"
+                    WIDTH="435"
+                    HEIGHT="21"
+                    WC="0.9990126037899452"></String>
+          </TextLine>
+          <TextLine ID="eSc_line_c345c328"
+                    TAGREFS="LT13395"
+                    BASELINE="107 190 515 190" 
+                    HPOS="107"
+                    VPOS="177"
+                    WIDTH="408"
+                    HEIGHT="22">
+            <Shape><Polygon POINTS="107 190 107 195 197 198 197 199 236 199 236 198 237 198 237 198 242 195 263 195 268 198 269 198 269 198 270 198 283 196 292 198 293 198 293 198 293 198 297 195 301 198 302 198 302 198 303 198 303 198 315 195 322 198 323 198 323 198 323 198 333 195 340 198 340 198 341 198 386 195 419 195 422 198 423 198 423 198 423 198 442 195 446 198 446 198 447 198 447 198 448 198 458 196 467 198 467 198 468 198 468 198 478 195 510 198 510 198 511 198 515 196 515 190 515 180 490 180 486 177 486 177 485 177 438 177 438 177 438 177 437 177 434 179 107 178 107 190"/></Shape>
+            <String CONTENT="XVIIᵉ et vient de Lyon et ses alentours ou du centre ou du sud de la France."
+                    HPOS="107"
+                    VPOS="177"
+                    WIDTH="408"
+                    HEIGHT="22"
+                    ></String>
+          </TextLine>
+        </TextBlock>
+        <TextBlock HPOS="103.0"
+                   VPOS="396.0"
+                   WIDTH="188.0"
+                   HEIGHT="21.0"
+                   ID="eSc_textblock_ee0cf907"
+                   TAGREFS="BT32561">
+          <Shape><Polygon POINTS="103 396 103 417 291 417 291 396"/></Shape>
+          <TextLine ID="eSc_line_7bcc36f5"
+                    TAGREFS="LT13395"
+                    BASELINE="108 409 299 409" 
+                    HPOS="108"
+                    VPOS="396"
+                    WIDTH="191"
+                    HEIGHT="22">
+            <Shape><Polygon POINTS="108 409 108 418 282 418 282 418 299 415 299 409 299 397 108 396 108 409"/></Shape>
+            <String CONTENT="Figure 2a. Photo Michel GUET"
+                    HPOS="108"
+                    VPOS="396"
+                    WIDTH="191"
+                    HEIGHT="22"
+                    WC="0.9987010679074696"></String>
+          </TextLine>
+        </TextBlock>
+        <TextBlock HPOS="109"
+                   VPOS="430"
+                   WIDTH="435"
+                   HEIGHT="41"
+                   ID="eSc_textblock_cf0c34bb"
+                   TAGREFS="BT32560">
+          <Shape><Polygon POINTS="109 432 109 471 542 471 544 430"/></Shape>
+          <TextLine ID="eSc_line_852ff88a"
+                    TAGREFS="LT13395"
+                    BASELINE="107 441 543 441" 
+                    HPOS="107"
+                    VPOS="428"
+                    WIDTH="436"
+                    HEIGHT="22">
+            <Shape><Polygon POINTS="540 428 107 428 107 441 107 449 542 450 543 441 542 433 540 428"/></Shape>
+            <String CONTENT="(Le filigrane se trouve au milieu de la feuille qui contient les pages [21-21b] et"
+                    HPOS="107"
+                    VPOS="428"
+                    WIDTH="436"
+                    HEIGHT="22"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_4dd78728"
+                    TAGREFS="LT13395"
+                    BASELINE="109 463 166 463" 
+                    HPOS="108"
+                    VPOS="450"
+                    WIDTH="58"
+                    HEIGHT="24">
+            <Shape><Polygon POINTS="109 463 109 474 166 474 166 463 165 452 110 450 110 450 109 450 109 450 109 450 108 450 109 463"/></Shape>
+            <String CONTENT="[28-28b])."
+                    HPOS="108"
+                    VPOS="450"
+                    WIDTH="58"
+                    HEIGHT="24"
+                    ></String>
+          </TextLine>
+        </TextBlock>
+        <TextBlock HPOS="104.0"
+                   VPOS="491.0"
+                   WIDTH="442.0"
+                   HEIGHT="88.0"
+                   ID="eSc_textblock_c22fea83"
+                   TAGREFS="BT32560">
+          <Shape><Polygon POINTS="104 494 106 579 546 579 546 491"/></Shape>
+          <TextLine ID="eSc_line_4baea398"
+                    TAGREFS="LT13395"
+                    BASELINE="126 504 543 504" 
+                    HPOS="126"
+                    VPOS="492"
+                    WIDTH="417"
+                    HEIGHT="22">
+            <Shape><Polygon POINTS="540 494 535 494 531 494 527 494 522 494 518 494 513 494 509 494 505 494 500 494 496 494 491 494 487 494 482 493 478 493 474 493 469 493 465 493 460 493 456 493 452 493 447 493 443 493 438 493 434 493 430 493 425 492 421 492 416 492 412 492 408 492 403 492 399 492 126 492 126 504 126 512 542 514 543 504 543 494 540 494"/></Shape>
+            <String CONTENT="Les trois autres documents du petit cahier qui contiennent des filigranes sont"
+                    HPOS="126"
+                    VPOS="492"
+                    WIDTH="417"
+                    HEIGHT="22"
+                    WC="0.9990363136315957"></String>
+          </TextLine>
+          <TextLine ID="eSc_line_61752df2"
+                    TAGREFS="LT13395"
+                    BASELINE="107 526 543 526" 
+                    HPOS="107"
+                    VPOS="513"
+                    WIDTH="436"
+                    HEIGHT="18">
+            <Shape><Polygon POINTS="107 526 107 531 543 531 543 526 543 513 531 515 525 513 525 513 524 513 505 515 444 513 444 513 443 513 437 516 300 516 289 513 289 513 288 513 282 516 251 516 242 513 241 513 241 513 241 513 233 516 186 516 175 513 174 513 174 513 170 515 166 513 166 513 165 513 130 513 130 513 129 513 119 515 107 513 107 526"/></Shape>
+            <String CONTENT="le « Traité des trois mariages » (deux monogrammes avec « IHS » encerclé et"
+                    HPOS="107"
+                    VPOS="513"
+                    WIDTH="436"
+                    HEIGHT="18"
+                    WC="0.9926203404154096"></String>
+          </TextLine>
+          <TextLine ID="eSc_line_15f6317b"
+                    TAGREFS="LT13395"
+                    BASELINE="107 548 543 547" 
+                    HPOS="107"
+                    VPOS="531"
+                    WIDTH="436"
+                    HEIGHT="23">
+            <Shape><Polygon POINTS="107 548 107 554 543 554 543 547 542 532 391 533 367 531 366 531 366 531 365 531 361 533 300 531 299 531 299 531 298 531 295 534 232 534 214 531 111 531 111 531 110 531 110 531 107 533 107 548"/></Shape>
+            <String CONTENT="surmonté d&#x27;une croix³), la « Méditation sur l’amour... » (non distinquable, peut-"
+                    HPOS="107"
+                    VPOS="531"
+                    WIDTH="436"
+                    HEIGHT="23"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_8f12861a"
+                    TAGREFS="LT13395"
+                    BASELINE="107 570 542 569" 
+                    HPOS="107"
+                    VPOS="556"
+                    WIDTH="435"
+                    HEIGHT="22">
+            <Shape><Polygon POINTS="107 570 107 578 542 577 542 569 542 556 107 556 107 570"/></Shape>
+            <String CONTENT="être un écu ou un singe), et le « Discours du jour de ste. Magdeleine» (deux"
+                    HPOS="107"
+                    VPOS="556"
+                    WIDTH="435"
+                    HEIGHT="22"
+                    WC="0.9963342662041004"></String>
+          </TextLine>
+        </TextBlock>
+        <TextBlock HPOS="320.0"
+                   VPOS="398.0"
+                   WIDTH="159.0"
+                   HEIGHT="18.0"
+                   ID="eSc_textblock_8ce36173"
+                   TAGREFS="BT32561">
+          <Shape><Polygon POINTS="320 398 320 416 479 416 479 398"/></Shape>
+          <TextLine ID="eSc_line_f924b92a"
+                    TAGREFS="LT13395"
+                    BASELINE="317 409 477 409" 
+                    HPOS="317"
+                    VPOS="396"
+                    WIDTH="160"
+                    HEIGHT="22">
+            <Shape><Polygon POINTS="476 397 473 396 317 396 317 409 317 417 476 418 477 409 476 397 476 397"/></Shape>
+            <String CONTENT="Figure 2b. BRIQUET 4151"
+                    HPOS="317"
+                    VPOS="396"
+                    WIDTH="160"
+                    HEIGHT="22"
+                    ></String>
+          </TextLine>
+        </TextBlock>
+        <TextBlock HPOS="527.0"
+                   VPOS="37.0"
+                   WIDTH="16.0"
+                   HEIGHT="10.0"
+                   ID="eSc_textblock_6b39b33f"
+                   TAGREFS="BT16581">
+          <Shape><Polygon POINTS="527 37 527 47 543 47 543 37"/></Shape>
+          <TextLine ID="eSc_line_f719b90e"
+                    TAGREFS="LT13395"
+                    BASELINE="529 44 538 43" 
+                    HPOS="528"
+                    VPOS="35"
+                    WIDTH="10"
+                    HEIGHT="15">
+            <Shape><Polygon POINTS="537 36 533 36 528 35 529 44 529 50 538 50 538 43 537 36 537 36"/></Shape>
+            <String CONTENT="89"
+                    HPOS="528"
+                    VPOS="35"
+                    WIDTH="10"
+                    HEIGHT="15"
+                    ></String>
+          </TextLine>
+        </TextBlock>
+        <TextBlock HPOS="105.0"
+                   VPOS="595.0"
+                   WIDTH="263.0"
+                   HEIGHT="17.0"
+                   ID="eSc_textblock_8156aec2"
+                   TAGREFS="BT32562">
+          <Shape><Polygon POINTS="105 595 105 612 368 612 368 595"/></Shape>
+          <TextLine ID="eSc_line_beda6f66"
+                    TAGREFS="LT13395"
+                    BASELINE="106 607 364 608" 
+                    HPOS="105"
+                    VPOS="595"
+                    WIDTH="258"
+                    HEIGHT="20">
+            <Shape><Polygon POINTS="105 606 105 611 119 615 119 615 120 615 174 612 236 615 236 615 363 612 363 607 363 596 105 595 105 606"/></Shape>
+            <String CONTENT="¹ Voir BRIQUET 4151 (tome 1 description, tome III image)."
+                    HPOS="105"
+                    VPOS="595"
+                    WIDTH="258"
+                    HEIGHT="20"
+                    ></String>
+          </TextLine>
+        </TextBlock>
+        <TextBlock HPOS="106.0"
+                   VPOS="611.0"
+                   WIDTH="436.0"
+                   HEIGHT="54.0"
+                   ID="eSc_textblock_2763dcbc"
+                   TAGREFS="BT32562">
+          <Shape><Polygon POINTS="542 665 542 611 106 611 107 665"/></Shape>
+          <TextLine ID="eSc_line_2631fe2f"
+                    TAGREFS="LT13395"
+                    BASELINE="109 620 542 621" 
+                    HPOS="107"
+                    VPOS="610"
+                    WIDTH="433"
+                    HEIGHT="15">
+            <Shape><Polygon POINTS="538 611 108 611 107 624 540 625 540 610 538 611"/></Shape>
+            <String CONTENT="² Jeanne a fondé des monastères à Lyon et à Grenoble ; à l’exception de Cluny et de Montpellier,"
+                    HPOS="107"
+                    VPOS="610"
+                    WIDTH="433"
+                    HEIGHT="15"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_300ac3b5"
+                    TAGREFS="LT13395"
+                    BASELINE="108 630 541 630" 
+                    HPOS="108"
+                    VPOS="623"
+                    WIDTH="433"
+                    HEIGHT="13">
+            <Shape><Polygon POINTS="108 630 108 636 541 636 541 630 541 623 108 623 108 630"/></Shape>
+            <String CONTENT="toutes les autres villes appereissent dans la correspondance (lettres de Jeanné, lettres adressées"
+                    HPOS="108"
+                    VPOS="623"
+                    WIDTH="433"
+                    HEIGHT="13"
+                    WC="0.9941438066959382"></String>
+          </TextLine>
+          <TextLine ID="eSc_line_5a19c840"
+                    TAGREFS="LT13395"
+                    BASELINE="109 641 541 640" 
+                    HPOS="108"
+                    VPOS="633"
+                    WIDTH="433"
+                    HEIGHT="13">
+            <Shape><Polygon POINTS="109 641 109 646 541 645 541 640 540 633 108 633 109 641"/></Shape>
+            <String CONTENT="à Jeanne, et lettres concernant Jeanne), comme lieu d’origine des lettres ou sont mentionnées"
+                    HPOS="108"
+                    VPOS="633"
+                    WIDTH="433"
+                    HEIGHT="13"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_d55ef89b"
+                    TAGREFS="LT13395"
+                    BASELINE="108 651 541 650" 
+                    HPOS="107"
+                    VPOS="643"
+                    WIDTH="434"
+                    HEIGHT="14">
+            <Shape><Polygon POINTS="108 651 108 657 320 657 320 657 320 657 330 655 540 657 541 650 540 643 107 643 108 651"/></Shape>
+            <String CONTENT="dans le texte de la lettre. Même Cluny et Montpellier ne peuvent pas être exclus à cause de leur"
+                    HPOS="107"
+                    VPOS="643"
+                    WIDTH="434"
+                    HEIGHT="14"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_fa346a61"
+                    TAGREFS="LT13395"
+                    BASELINE="108 661 396 660" 
+                    HPOS="108"
+                    VPOS="653"
+                    WIDTH="288"
+                    HEIGHT="14">
+            <Shape><Polygon POINTS="108 661 109 667 113 665 196 667 196 667 215 665 395 665 396 660 394 653 108 653 108 661"/></Shape>
+            <String CONTENT="proximité des autres villes connues de Jeanne et de ses proches."
+                    HPOS="108"
+                    VPOS="653"
+                    WIDTH="288"
+                    HEIGHT="14"
+                    WC="0.9987078125660236"></String>
+          </TextLine>
+        </TextBlock>
+        <TextBlock HPOS="106"
+                   VPOS="666"
+                   WIDTH="439"
+                   HEIGHT="52"
+                   ID="eSc_textblock_a6f21538"
+                   TAGREFS="BT32562">
+          <Shape><Polygon POINTS="544 713 545 666 106 666 109 718"/></Shape>
+          <TextLine ID="eSc_line_461ec310"
+                    TAGREFS="LT13395"
+                    BASELINE="110 673 542 674" 
+                    HPOS="109"
+                    VPOS="666"
+                    WIDTH="431"
+                    HEIGHT="12">
+            <Shape><Polygon POINTS="539 666 109 666 109 677 540 678 539 666"/></Shape>
+            <String CONTENT="³ Les filigranes avec cette sorte de monogramme sont trop nombreux dans le « Briquet » (Vol."
+                    HPOS="109"
+                    VPOS="666"
+                    WIDTH="431"
+                    HEIGHT="12"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_4541f958"
+                    TAGREFS="LT13395"
+                    BASELINE="109 684 542 683" 
+                    HPOS="108"
+                    VPOS="675"
+                    WIDTH="434"
+                    HEIGHT="14">
+            <Shape><Polygon POINTS="109 689 541 689 542 683 541 676 108 675 109 684"/></Shape>
+            <String CONTENT="II et Vol. IV n° 9460-9508) pour préciser la provenance du papier, et des recherches dans"
+                    HPOS="108"
+                    VPOS="675"
+                    WIDTH="434"
+                    HEIGHT="14"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_cd88c2e8"
+                    TAGREFS="LT13395"
+                    BASELINE="108 694 542 693" 
+                    HPOS="108"
+                    VPOS="686"
+                    WIDTH="434"
+                    HEIGHT="12">
+            <Shape><Polygon POINTS="108 694 108 698 541 697 542 693 541 686 108 686 108 694"/></Shape>
+            <String CONTENT="GAUDRIAULT, Raymond, Filigranes et autres caractéristiques des papiers fabriqués en Fance aux"
+                    HPOS="108"
+                    VPOS="686"
+                    WIDTH="434"
+                    HEIGHT="12"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_d206b55a"
+                    TAGREFS="LT13395"
+                    BASELINE="108 704 542 703" 
+                    HPOS="107"
+                    VPOS="694"
+                    WIDTH="435"
+                    HEIGHT="21">
+            <Shape><Polygon POINTS="108 704 108 711 195 711 212 715 213 715 213 715 274 712 280 715 280 715 281 715 542 714 542 703 541 694 107 696 108 704"/></Shape>
+            <String CONTENT="XVIIᵉ et XVIIIᵉ siècles, Paris, CRS — J. Tellord, 1995 (p. 137-138 et planches 718-740) ont été"
+                    HPOS="107"
+                    VPOS="694"
+                    WIDTH="435"
+                    HEIGHT="21"
+                    ></String>
+          </TextLine>
+          <TextLine ID="eSc_line_9f6d13df"
+                    TAGREFS="LT13395"
+                    BASELINE="108 714 197 713" 
+                    HPOS="108"
+                    VPOS="705"
+                    WIDTH="89"
+                    HEIGHT="17">
+            <Shape><Polygon POINTS="108 714 108 722 197 722 197 713 196 706 108 705 108 714"/></Shape>
+            <String CONTENT="aussi infructueuses."
+                    HPOS="108"
+                    VPOS="705"
+                    WIDTH="89"
+                    HEIGHT="17"
+                    ></String>
+          </TextLine>
+        </TextBlock>
+        <TextBlock HPOS="314.0"
+                   VPOS="214.0"
+                   WIDTH="212.0"
+                   HEIGHT="204.0"
+                   ID="eSc_textblock_f497482d"
+                   TAGREFS="BT32563">
+          <Shape><Polygon POINTS="314 214 314 415 526 418 526 214"/></Shape>
+        </TextBlock>
+        <TextBlock HPOS="95.0"
+                   VPOS="203.0"
+                   WIDTH="449.0"
+                   HEIGHT="226.0"
+                   ID="eSc_textblock_9ff915b2"
+                   TAGREFS="BT16579">
+          <Shape><Polygon POINTS="95 204 96 429 544 428 544 203"/></Shape>
+        </TextBlock>
+        <TextBlock HPOS="98.0"
+                   VPOS="214.0"
+                   WIDTH="212.0"
+                   HEIGHT="201.0"
+                   ID="eSc_textblock_e1272e34"
+                   TAGREFS="BT32563">
+          <Shape><Polygon POINTS="98 214 98 415 310 415 310 214"/></Shape>
+        </TextBlock>
+      </PrintSpace>
+    </Page>
+  </Layout>
+</alto>
