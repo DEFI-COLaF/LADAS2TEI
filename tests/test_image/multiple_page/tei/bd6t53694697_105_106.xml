@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>bd6t53694697_105</title>
+                <respStmt>
+                    <resp>Encoding</resp>
+                    <persName xml:id="JJANES">
+                        <surname>Janès</surname>
+                        <forename>Juliette</forename>
+                        <idno type="orcid">0000-0002-8971-6173</idno>
+                    </persName>
+                </respStmt>
+            </titleStmt>
+            <publicationStmt>
+                <p>Extraction aléatoire d'une page et annotation manuelle</p>
+            </publicationStmt>
+            <sourceDesc>
+                <p>LADaS</p>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body>
+            <div>
+                <milestone unit="page" n="105"/>
+                <p><lb/>Vous voulez que les autres vous pardonnent,<lb/> vous secourent, soient bons
+                    envers vous ; faites<lb/> de même : pardonnez, secourez les autres et
+                    soyez<lb/> bons envers eux.»</p>
+                <p><lb/>Tels sont les enseignements de Jésus sur l’amour <lb/> du prochain.</p>
+                <p><lb/>Observons-nous ces préceptes? Si nous ne pen-<lb/>sons pas ainsi, si nous
+                    n’agissons pas ainsi, nous<lb/> n’avons pas la vraie foi.</p>
+                <p><lb/>Ceux-là seulement ont la vraie foi, qui agissent<lb/> conformément à leur
+                    croyance.</p>
+            </div>
+            <div>
+                <head><lb/>LA VRAIE PIÉTÉ.</head>
+                <p><lb/>Saint François de Sales était non seulement un<lb/> modèle admirable de
+                    bonté, de douceur, de cha-<lb/>rité, il possédait encore la science du salut,
+                    il<lb/> avait une vaste intelligence.</p>
+                <p><lb/>Unissant la science à la piété, le saint évêque<lb/> composa plusieurs
+                    ouvrages qui renferment les<lb/> plus utiles enseignements sur la perfection
+                    chré-<lb/>tienne.</p>
+                <p><lb/>Voici un résumé de ses instructions sur la vraie<lb/> dévotion.</p>
+                <p><lb/>Qu’est-ce que la dévotion, la vraie piété?<lb/> Parlons d’abord de la
+                    dévotion fausse, trom-<lb/>peuse.</p>
+                <p><lb/>Beaucoup de personnes ont coutume de réciter<fw
+                        type="digitisation-artefact">
+                        <lb/>Source gallica.bnfifr / Bibliothèque nationale de
+                        France</fw><milestone unit="page" n="100"/><lb/> revenait à la maison se
+                    recoucher sans que ses parents eussent remarqué son absence.</p>
+
+                <p><lb/>Ayez la même bonne volonté et vous aurez le <lb/> temps d’aller souvent
+                    communier.</p>
+
+                <p><lb/>Il y a trois vertus appelées théologales ou divines, <lb/> parce qu’elles
+                    ont Dieu pour objet (but) direct <lb/> et principal : la foi, l’espérance et la
+                    charité.</p>
+            </div>
+            <div>
+                <head>LA FOI.</head>
+                <p><lb/>Par la foi, nous croyons en Dieu; par l’espérance, <lb/> nous attendons le
+                    bonheur de posséder Dieu; par <lb/> la charité, nous aimons Dieu de tout notre
+                    cœur.</p>
+                <p><lb/>La foi est une grâce, un don de Dieu, une vertu <lb/> par laquelle nous
+                    croyons fermement en Dieu et <lb/> tout ce qu’il a révélé.</p>
+                <p><lb/>La lumière du soleil est nécessaire à nos yeux <lb/> pour que nous
+                    puissions voir les personnes et les <lb/> choses qui nous environnent : sans le
+                    soleil, tout <lb/> serait dans une profonde obscurité.</p>
+                <p><lb/>La foi est une lumière divine qui éclaire notre <lb/> intelligence et nous
+                    fait connaître des vérités que <lb/> nous ne pouvons connaître sans la foi,
+                    sans la <lb/> révélation divine.</p>
+                <p><lb/>Dieu étant notre souverain Maître, il est juste <lb/> que, par la foi,
+                    nous lui soumettions entièrement <lb/> et parfaitement notre intelligence,
+                    comme nous <lb/> lui soumettons notre cœur par la charité.</p>
+            </div>
+        </body>
+    </text>
+</TEI>

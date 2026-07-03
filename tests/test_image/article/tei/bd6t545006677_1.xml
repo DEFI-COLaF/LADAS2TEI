@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>bd6t545006677_1</title>
+                <respStmt>
+                    <resp>Encoding</resp>
+                    <persName xml:id="JJANES">
+                        <surname>Janès</surname>
+                        <forename>Juliette</forename>
+                        <idno type="orcid">0000-0002-8971-6173</idno>
+                    </persName>
+                </respStmt>
+            </titleStmt>
+            <publicationStmt>
+                <p>Extraction aléatoire d'une page et annotation manuelle</p>
+            </publicationStmt>
+            <sourceDesc>
+                <p>LADaS</p>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body>
+            <div>
+                <fw type="runningTitle"><lb/>Première ainnée. — L° 1.</fw>
+                <fw type="runningTitle"><lb/>Dimanche l' 20 du mos d' Janvier 1889.</fw>
+                <head><lb/>Journal in patois qui s’imprime l’ Sam’di</head>
+                <head><lb/>L' liméro : UN SOU</head>
+                <figure type="table">
+                    <head><lb/>ABONN'MINTS</head>
+                </figure>
+                <p rend="styled"><lb/>Pou les grand's annonces on s’intindra toudis.</p>
+                <ab><lb/>BUREAUX et ADMINISTRATION : <lb/> Rue du Cirque (c. Gilson, 2), LILLE <lb/>
+                    Rédacteur in chef: BRULE-MAISON Fils.</ab>
+                <figure type="table">
+                    <head><lb/>ANNONCES : </head>
+                </figure>
+                <div type="article">
+                    <head><lb/>Chin qu' nous donnons <lb/> cheull' fos ichi.</head>
+                    <p rend="structured"><lb/>1. Salut !!! 2. L'Union. 3. Les Faijeux d'lois : la
+                        <lb/> Chambe, l'Sénat 4. Un saint Minteux 5. L' Rêve du <lb/> Maite. 6. Un
+                        vieux Truc. 7. Par Fi d’acar. 8. Le P'tit- <lb/> Quinquin. 9. Les
+                        Command'mints de l' vieille fille. <lb/> 10. L’Lique anti-plébiscitaire 11.
+                        L'Œul d’un com- missaire. 12. Un peu d' tout's sortes 13. D'vinnette.</p>
+                </div>
+                <div type="article">
+                    <head><lb/>Salut!!!</head>
+                    <p><lb/>N'allez point tertous faire des grimaces; <lb/> ch' l'infant, quoique
+                        v’nu avant terme, a tout <lb/> chin qui faut pou li vive.</p>
+                    <p><lb/>Sin grand'père, qui avot les gambes trop <lb/> Faites pour trotter
+                        comme i faut, dins nou <lb/> sièque d' vapeur et d’électricité, est resté
+                        in <lb/> qu'min, bertonnant li tout seu su s'n impuis. <lb/> sance.</p>
+                    <p><lb/>Que volez-vous qu' le « Ptit-Quinquin " y <lb/> faiche?</p>
+                    <p>I est vinu après l' vieux qui s'a perdu; <lb/> mais li, veyant clair, ira,
+                        sans lanterne et <lb/> cans leunettes, comme sur des roulettes ; i <lb/>
+                        Sara amuser les filles et les garchons, faire <lb/> rigoler tous chés bons
+                        lurons, et apprinte <lb/> Ruesi à l’s électeurs, qui n’ont point l’temps
+                        <lb/> lire tous les jours eun' grande gazette, chin <lb/> ui faut faire pou
+                        voter saus s' tromper et <lb/> pou rimplir leus devoirs d' citoyen.</p>
+                    <p><lb/>Le « Prtit Quinquin » est un infant d' nou <lb/> temps; on rigole, i
+                        rigol'ra; on veut ète sa- <lb/>fant, i l' s'ra.</p>
+                    <p><lb/>Mis, comme il est incore un p'tit peu <lb/> gosse, i s'ra toudis fin
+                        contint — pasqu’il s’ra <lb/> ten él'vé, savez — de r’chevoir les bons
+                        <lb/> consels d' tous cheusses qui pinsent que <lb/> parole porra rinde
+                        service à les gins.</p>
+                    <p><lb/>Allons ! n' ménagez point vou lanque, tous <lb/> braves et honnêtes
+                        comarates d’ Lille, <lb/> Roubaix, Tourcoing, Armentière, et des <lb/>
+                        Virons; v’nez nous dire tous les séquois <lb/> bon qui pass’ront dins vou
+                        tiète et le <lb/> P'tit Quinquin les port'ra à vingt lieues à la <lb/>
+                        monde.</p>
+                    <p><lb/>In attindant d' vos nouvielles, le « P'tit- <lb/> Quinquin » vous invoie
+                        à tertous eun' grosse <lb/> baisse.</p>
+                    <p rend="signed"><lb/>L' Rédaction.</p>
+                </div>
+                <div type="article">
+
+                    <head><lb/>L’UNION</head>
+                    <p><lb/>Eh ben ! aoui, ch’est intindu, tous les ré- <lb/> publicains f'ront
+                        l’union.</p>
+                    <p><lb/>Tertous, nous march’rons d’accord, mo- <lb/> mintanémint, laichant d'
+                        côté tous nos r’ela- <lb/> mations pour nous unir su ch' terrain com-
+                        <lb/>mun : la République.</p>
+
+                    <p><lb/>Tertous, nous s' dévouerons pour combatte <lb/> l’avinturier, l' soldat
+                        intêté qui cache d'é- <lb/> gorger la République, et nous n' n’arons
+                        bé- <lb/>tôt raison.</p>
+                    <p>Mais, quand ch' l’homme qui s’intind si <lb/> bien avec les réactionnaires
+                        et qui a un ap- <lb/> pétit d’ loup, apres avoir été méprisé par <lb/>
+                        tout l'monde, s’ra réduit à vive comme eun' <lb/> mouquère avec chés
+                        biaux arlequins qui <lb/> forment s’n intourache; quand Boulinger <lb/>
+                        (vous savez bien qu' ch’est d’ li qu’ nous par- <lb/>lons) aura r'chu, d'
+                        tous les républicains <lb/> réunis, l'claque qu’i mérite et qu’on arot
+                        <lb/> déjà dó li foute d’puis longtemps, et qui s’ra <lb/> parti, sans in
+                        d’mander puque, comme un <lb/> Bazaine d’un nouviau genre, quoich' qui <lb/>
+                        rest’ra d' l’union des républicains ?</p>
+
+                    <p><lb/>J’ai bien peur qui n’in reste rien.</p>
+                    <p><lb/>— Ah ! j’intinds crier, ch’est les gins des par- <lb/>tis avancés qui
+                        l’aront caché!</p>
+                    <p><lb/>— Non. dit'nt l's autes, ch’est les modérés <lb/> qui inverront les
+                        pus rouches à l’ balochoire.</p>
+                    <p><lb/>Qui estch' qui a raison ? — A m' mote, un <lb/> p'tit peu tertous.</p>
+                    <p><lb/>Cha, on va m' dire, ch’est ménager l'ché- <lb/>ve et l' chou.
+                        Quoich'que cha m’ fait ? mi, <lb/> j' crosque j’ai dit la vérité, et si je
+                        m' trompe <lb/> qu’on me l’ diche, je r’connaîtrai facil’mintque <lb/> je
+                        m' sus foutu d’dins.</p>
+                    <p><lb/>N' nous arrétons point à ch' l’idée et veyons <lb/> un peu d’où
+                        vient qu' les républicains sont <lb/> partagés in plusieurs camps.</p>
+                    <p><lb/>D’abord, ch’est qui n’y a gramint qui <lb/> n’ont point tout à fait
+                        assez l' goût d' s’oc- <lb/>cuper des intérêts du pays et d' la Répu-
+                        <lb/>blique, et qu’is aim'nt mieux faire leus 'af- <lb/> faires à eusses,
+                        que d' vétier à l’s affaires gé- <lb/>nérales. Avec cha il y a incore
+                        eun' binde de <lb/> flaneux et un tas d’ point marioles rimplis <lb/>
+                        d’imbition, volant d’s honneurs et s' foutant <lb/> du reste. Bien intindu,
+                        tous chés dégourdis <lb/> sans malice n' font rien et i sont toudis op-
+                        <lb/>posés à tout ch' qui porrot l’s obliger d' <lb/> marcher autermint
+                        qu' les équerviches.</p>
+                    <p><lb/>Il y a incor l's agrapaches d' tous chés <lb/>gins. M. Un tel, d' tel
+                        groupe, veut eun' sé- <lb/>quoi, cha n' vaut rien; mais cha s’rot excel-
+                        <lb/>lent si cha sortot de l’bouque d’un aute. Et <lb/> alors on s'
+                        chamaille, on fait du potin, qué- <lb/> qu’fos même du boucan, on
+                        s’ingueule pir- <lb/>sant dins tout cha aux b’soins du peupe <lb/> comme à
+                        s' première maronne.</p>
+                    <p><lb/>Ch’est-i point déplorabe d' vir les répu- <lb/>blicains s’attraper si
+                        souvint par les ch’veux, <lb/> tandis qui devrottent toudis faire attintion
+                        à <lb/> les réactionnaires, vrai serpent à siept tiêtes, <lb/> qui
+                        profitent d' toutes nos faiblesses et d’ nos <lb/> tiraill'mints !</p>
+                    <p><lb/>Ecrasons cheull' biête rimplie d’venin, qui <lb/> cache à percher d'
+                        sin dard mortel la Répu- <lb/>blique, et nous arons fait eun' bonne action
+                        !</p>
+                    <p><lb/>— Aoui, i faut qu' les républicains s’in- <lb/>tintent toudis tertous
+                        insonne! Aoui, i faut <lb/> qu' tous l's hommes d' la politique s’ingag'nt
+                        <lb/> à ouvrer dins l’intérêt d' tertous.</p>
+
+                    <p><lb/>Bas les masques ! Arrière les imbilieux <lb/> sans capacité ! faites
+                        plache aux hommes <lb/> d’action et d' tiête.</p>
+                    <p><lb/>N'oblions point qu' l’ouveurier, pour li ai- <lb/>mer la République,
+                        dot povoir dire : « La Ré- <lb/>publique, ch’est l’ bien ête ! La
+                        République, <lb/> in m' donnant la Liberté, m’ donne l’ moyen <lb/> d'
+                        vive honnêt'mint in ouvrant; et si je <lb/> n' sus point toudis tout à
+                        fait contint, j' sais <lb/> au moins qu' mes r’présintants faitent tout
+                        <lb/> leu possible pour nous donner des réformes <lb/> sociales dins
+                        l’intéret d' tout l’monde.</p>
+                    <p><lb/>Soyons unis, républicains, mais soyons <lb/> unis pou l’ travail.</p>
+
+                    <p><lb/>I faut qu' la République vive, mais que <lb/> s' sante sot solide.</p>
+                    <p><lb/>Ch’est seul’mint par l’union qu' nous por- <lb/>rons li donner un
+                        nouviau sang qui l'forti- <lb/>fiera et l' rindra durable malgré toutes les
+                        <lb/> attaques.</p>
+                    <p rend="signed"><lb/>Brule-Maison fils.</p>
+                    <fw type="digital-artefact">Source gallica.bnf fr /Bibliothèque municipale de
+                        Lille</fw>
+                </div>
+            </div>
+        </body>
+    </text>
+</TEI>

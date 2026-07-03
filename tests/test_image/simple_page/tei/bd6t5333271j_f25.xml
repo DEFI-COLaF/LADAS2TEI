@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>bd6t5333271j_f25</title>
+                <respStmt>
+                    <resp>Encoding</resp>
+                    <persName xml:id="JJANES">
+                        <surname>Janès</surname>
+                        <forename>Juliette</forename>
+                        <idno type="orcid">0000-0002-8971-6173</idno>
+                    </persName>
+                </respStmt>
+            </titleStmt>
+            <publicationStmt>
+                <p>Extraction aléatoire d'une page et annotation manuelle</p>
+            </publicationStmt>
+            <sourceDesc>
+                <p>LADaS</p>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body>
+            <div>
+                <head>
+                    <lb/>TABLE HISTORIQUE ET MÉTHODIQUE <lb/> DES <lb/> TRAVAUX ET PUBLICATIONS
+                    <lb/> DE L'ACADÉMIE DE BORDEAUX</head>
+                <p rend="labelled"><lb/>(Depuie 1712 usqu'en 1875)</p>
+                <div>
+                    <head><lb/>INDEX ALPHABÉTIQUE</head>
+                    <figure type="table"/>
+                </div>
+            </div>
+        </body>
+    </text>
+</TEI>

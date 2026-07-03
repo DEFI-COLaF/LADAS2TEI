@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>2011LYO30049_88</title>
+                <respStmt>
+                    <resp>Encoding</resp>
+                    <persName xml:id="JJANES">
+                        <surname>Janès</surname>
+                        <forename>Juliette</forename>
+                        <idno type="orcid">0000-0002-8971-6173</idno>
+                    </persName>
+                </respStmt>
+            </titleStmt>
+            <publicationStmt>
+                <p>Extraction aléatoire d'une page et annotation manuelle</p>
+            </publicationStmt>
+            <sourceDesc>
+                <p>LADaS</p>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <body>
+            <div>
+                <milestone unit="page" n="89"/>
+                <p><lb/>Pour la seconde partie du manuscrit, le filigrane, toujours avec le motif
+                    d’une<lb/> cloche mais sans nom, montre que le papier est semblable aux
+                    exemplaires<lb/> provenant de Cuny (1603), de Montbrison (1604) et de Valence¹
+                    (1604). La plupart<lb/> de ces villes ont été fréquentées par Jeanne ou par
+                    ses proches², et donc<lb/> tout ce qui peut se savoir avec certitude est que
+                    tout le papier est du premier<lb/> XVIIᵉ et vient de Lyon et ses alentours ou du
+                    centre ou du sud de la France.</p>
+                <figure>
+                    <figure>
+                        <head><lb/>Figure 2a. Photo Michel GUET</head>
+                    </figure>
+                    <figure>
+                        <head><lb/>Figure 2b. BRIQUET 4151</head>
+                    </figure>
+                </figure>
+                <p><lb/>(Le filigrane se trouve au milieu de la feuille qui contient les pages
+                    [21-21b]<lb/> et [28-28b]).</p>
+                <p><lb/>Les trois autres documents du petit cahier qui contiennent des filigranes sont
+                    le<lb/> « Traité des trois mariages » (deux monogrammes avec « IHS » encerclé
+                    et<lb/> surmonté d'une croix³), la « Méditation sur l’amour... » (non
+                    distinquable,<lb/> peut- être un écu ou un singe), et le « Discours du jour de
+                    ste. Magdeleine»<lb/> (deux</p>
+                <note>
+                    <p rend="labelled"><lb/>¹ Voir BRIQUET 4151 (tome 1 description, tome III image).</p>
+                    <p rend="labelled"><lb/>² Jeanne a fondé des monastères à Lyon et à Grenoble ;
+                        à<lb/> l’exception de Cluny et de Montpellier, toutes les autres
+                        villes<lb/> appereissent dans la correspondance (lettres de Jeanné, lettres
+                        adressées<lb/> à Jeanne, et lettres concernant Jeanne), comme lieu
+                        d’origine des lettres<lb/> ou sont mentionnées dans le texte de la lettre.
+                        Même Cluny et Montpellier<lb/> ne peuvent pas être exclus à cause de leur
+                        proximité des autres villes<lb/> connues de Jeanne et de ses proches.</p>
+                    <p rend="labelled"><lb/>³ Les filigranes avec cette sorte de monogramme sont
+                        trop<lb/> nombreux dans le « Briquet » (Vol. II et Vol. IV n° 9460-9508)
+                        pour<lb/> préciser la provenance du papier, et des recherches dans
+                        GAUDRIAULT,<lb/> Raymond, Filigranes et autres caractéristiques des papiers
+                        fabriqués en<lb/> Fance aux XVIIᵉ et XVIIIᵉ siècles, Paris, CRS — J.
+                        Tellord, 1995 (p.<lb/> 137-138 et planches 718-740) ont été aussi
+                        infructueuses.</p>
+                </note>
+            </div>
+        </body>
+    </text>
+</TEI>

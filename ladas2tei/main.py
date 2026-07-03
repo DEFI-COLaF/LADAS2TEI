@@ -1,251 +1,164 @@
-import os
+from __future__ import annotations
+
+from pathlib import Path
+
 import click
 from lxml import etree as ET
-from datetime import datetime
-import csv
-import re
-import pkg_resources
 
-tei_mapping = {
-    "AdvertisementZone": """<fw type="ad">""",
-    "DigitizationArtefactZone": """<fw type="digital">""",
-    "DropCapitalZone": """<hi rend="dropcapital">""",
-    "FigureZone": """<figure type="code">""",
-    "FigureZone-FigDesc": """<figDesc>""",
-    "FigureZone-Head": """<head>""",
-    "GraphicZone": """<figure>""",
-    "GraphicZone-Decoration": """<figure type="decoration">""",
-    "GraphicZone-FigDesc": "<figDesc>""",
-    "GraphicZone-Head": """<head>""",
-    "GraphicZone-Maths": """<figure type="maths">""",
-    "GraphicZone-Part": """<figure>""",
-    "GraphicZone-TextualContent":  """<p>""",
-    "MainZone-Date": """<dateline>""",
-    "MainZone-Entry": ["""<div type="entry">""","<p>"],
-    "MainZone-Form": ['<div type="form">', "<p>"],
-    "MainZone-Head": """<head>""",
-    "MainZone-Lg": '<lg>',
-    "MainZone-List": ['<list>', '<item>'],
-    "MainZone-Other": ['<div type="others">', "<p>"],
-    "MainZone-P": """<p>""",
-    "MainZone-P@CatalogueDesc": """<entry>""",
-    "MainZone-Signature": ["""<div type="letter">""", """<closer>""", """<signed>"""],
-    "MainZone-Sp": """<sp>""",
-    "MarginTextZone-ManuscriptAddendum": """<fw type="margin">""",
-    "MarginTextZone-Notes": """<note>""",
-    "NumberingZone": """<fw type="numbering">""",
-    "PageTitleZone": ["""<div type="titlepage">""",  """<p>"""],
-    "PageTitleZone-Index": ["""<div type="toc">""", """<p>"""],
-    "QuireMarkZone": """<fw type="quiremark">""",
-    "RunningTitleZone": """<fw type="runningtitle">""",
-    "StampZone": """<fw type="stamp">""",
-    "StampZone-Sticker": """<fw type="sticker">""",
-    "TableZone": """<figure type="table">""",
-    "TableZone-Head":  """<head>""",
-    }
-cumulative = {
-        "GraphicZone-FigDesc": "GraphicZone",
-        "GraphicZone-Head": "GraphicZone",
-        "GraphicZone-Part": "GraphicZone",
-        "GraphicZone-TextualContent": "GraphicZone",
-        "FigureZone-FigDesc" : "FigureZone",
-        "FigureZone-Head":"FigureZone",
-        "TableZone-Head": "TableZone",
-    } 
+from ladas2tei.alto import document_subdirectories, expand_alto_inputs
+from ladas2tei.metadata import load_metadata, select_metadata
+from ladas2tei.models import TeiConversion
+from ladas2tei.tei import build_tei, write_tei
 
 
-def process_document(directory, doc, liste_block, xslt_file, n):
-    """
-    Processes each document in the directory, applies XSLT, and generates the corresponding TEI structure.
-    
-    :param doc: The document to be processed.
-    :param xslt_file: Path to the XSLT file.
-    :param directory: Directory containing the XML files.
-    :param tei_mapping: Mapping for TEI elements.
-    :param cumulative: Cumulative zones dictionary.
-    """
-    transformed_tree = apply_xslt(directory+'/'+doc, xslt_file)
-    if transformed_tree:
-        root = transformed_tree.getroot()
-        liste_zone = root.findall('region')
-        liste_block.append(f"<pb n='{n}' facs='{doc}'/>")
-        n_zone = 0
-        for zone in liste_zone:
-            zone_type = zone.attrib.get('type', None)
-            tag = tei_mapping.get(zone_type, '<ab>')
-            continued = "Continued" in zone_type if zone_type else False
-            cumul = cumulative.get(zone_type, False) if zone_type else False
-            is_list = True if isinstance(tag, list) else False
-            liste_line = process_line(zone, tag,n, n_zone)
-            liste_block = update_block(liste_block, tag,liste_line, continued, cumul, is_list, zone_type)
-            n_zone+=1
-    return liste_block
-
-
-def fill_header(template_file, metadata):
-    with open(template_file, 'r', encoding='utf-8') as file:
-        template = file.read()
-    placeholders = re.findall(r'\[(\w+)\]', template)
-    replacements = { column: metadata.get(column, '') for column in placeholders}
-    replacements['date_today'] = datetime.today().date()
-    for placeholder, value in replacements.items():
-        template = template.replace(f'[{placeholder}]', str(value))
-    return template
-
-def apply_xslt(xml_file, xslt_file):
-    """
-    Parses an XML file and applies an XSLT transformation.
-    
-    :param xml_file: Path to the input XML file.
-    :param xslt_file: Path to the XSLT file.
-    :return: Transformed XML tree or None in case of error.
-    """
-    try:
-        xml_tree = ET.parse(xml_file)
-        xslt_tree = ET.parse(xslt_file)
-        transform = ET.XSLT(xslt_tree)
-        return transform(xml_tree)
-    except Exception as e:
-        print(f"Error: {e}")
-        return None
-
-
-def process_line(zone, tag, n, n_zone):
-    """
-    Processes each zone in the XML and returns formatted lines.
-    
-    :param zone: The XML zone element.
-    :param tag: Start tag for the zone.
-    :param tag_end: End tag for the zone.
-    :param n: Page number.
-    :param n_line: Line number.
-    :return: List of lines with corresponding tags.
-    """
-    liste_line = []
-    n_line=0
-    for line in zone.findall("line"):
-        n_line += 1
-        text = line.text
-        if text:
-            text = text.replace("&", "et")
-        if tag == "MainZone-Lg":
-            liste_line.append(f"<l><lb n='{n_line}'/> {text}</l>")
-        liste_line.append(f"<lb n='{n_line}'/> " + (text or ""))
-    
-    return liste_line
-
-
-def create_tag_end(tag):
-    if isinstance(tag, list):
-        tag = "".join(tag[::-1])
-    cleaned_string = re.sub(r'<(\w+)(\s+[^>]*)?>', r'<\1>', tag)
-    tag_end = cleaned_string.replace('<', '</')
-    return tag_end
-
-
-
-def update_block(liste_block, tag, liste_line, continued, cumul, is_list, zone_type):
-    """
-    Updates the block list by adding new content based on zone type, continued blocks, and cumulative blocks.
-    
-    :param liste_block: The list of blocks to be updated.
-    :param tag: Start tag for the zone.
-    :param tag_end: End tag for the zone.
-    :param liste_line: List of processed lines.
-    :param continued: Boolean indicating if the block is continued.
-    :param cumul: Boolean indicating if the block is cumulative.
-    :param n: Page number.
-    :param zone_type: Type of the zone.
-    :return: Updated list of blocks.
-    """
-    #if '<div type="titlepage">' in liste_block[-1] or '<div type="toc">' in liste_block[-1]:
-    #liste_block.append("<div>")
-    if continued:
-        for i in range(len(liste_block)-1, -1, -1):
-            last_block_zone = liste_block[i]
-            if 'fw' in last_block_zone or 'pb' in last_block_zone:
-                continue
-            break
-        pattern = r"<\/[^>]+>"
-        matches = re.findall(pattern, last_block_zone)
-        if matches:
-            last_tag_end = ''.join(matches)
-            modified_last_block_zone = re.sub(pattern, '', last_block_zone)
-            liste_block[i] = modified_last_block_zone
-            liste_block.append("".join(liste_line) + last_tag_end)
-        else:
-            print('pas de matches')
-
-    elif cumul or is_list:
-        last_block = liste_block[-1]
-        last_tag = re.search('</[a-zA-Z]*>$', last_block)
-        tag_end = create_tag_end(tag)
-        if cumul:
-            last_tag_needed = tei_mapping[cumulative[zone_type]]
-        else:
-            last_tag_needed = create_tag_end(tag[0])
-        if last_tag and last_tag.group()==last_tag_needed:
-            if is_list:
-                tag_end = create_tag_end(tag[1])
-                tag = tag[1]
-            modified_block = last_block.replace(last_tag.group(), "") + tag + "".join(liste_line) + tag_end + last_tag.group()
-            liste_block[-1] = modified_block
-        else:
-            liste_block.append("".join(tag) + "".join(liste_line) + tag_end)
-    elif (zone_type=="MainZone-Head" and any("<head>" in el for el in liste_block)): 
-        tag_end = create_tag_end(tag)
-        liste_block.append("</div><div>"+tag + "".join(liste_line)+tag_end)
-    else:
-        tag_end = create_tag_end(tag)
-        liste_block.append(tag + "".join(liste_line) + tag_end)
-    
-    return liste_block
-
-
-
-    
 @click.command()
-@click.argument('csv_metadata', type=str)
-@click.argument('pattern_header', type=str, required=False)
-def main(csv_metadata, pattern_header):
-    if not os.path.exists('TEI'):
-        os.makedirs('TEI')
-    #xslt_file = pkg_resources.resource_filename("ladas2tei", "alto2XMLsimple.xsl")
-    xslt_file = "./ladas2tei/alto2XMLsimple.xsl"
-    with open(csv_metadata, newline='', encoding="utf-8") as csv_file:
-        reader=csv.DictReader(csv_file)
+@click.argument("alto_files", nargs=-1, type=click.Path(exists=True, file_okay=True, dir_okay=True, path_type=Path))
+@click.option("-o", "--output", type=click.Path(path_type=Path), help="Fichier TEI ou dossier de sortie.")
+@click.option("--metadata-csv", type=click.Path(exists=True, dir_okay=False, path_type=Path))
+@click.option("--title", type=str, help="Titre TEI a utiliser dans l'en-tete.")
+@click.option("--article", is_flag=True, help='Ajoute un div type="article" autour du contenu.')
+@click.option("--theatre", is_flag=True, help="Traite les locuteurs et les vers comme une piece de theatre.")
+def main(
+    alto_files: tuple[Path, ...],
+    output: Path | None,
+    metadata_csv: Path | None,
+    title: str | None,
+    article: bool,
+    theatre: bool,
+) -> None:
+    """Lance la conversion depuis la ligne de commande.
+
+    :param alto_files: fichiers ALTO ou dossiers a convertir.
+    :type alto_files: tuple[Path, ...]
+    :param output: fichier XML ou dossier de sortie.
+    :type output: Path | None
+    :param metadata_csv: CSV de metadonnees, si fourni.
+    :type metadata_csv: Path | None
+    :param title: titre force dans l'en-tete TEI.
+    :type title: str | None
+    :param article: active le wrapper div type="article".
+    :type article: bool
+    :param theatre: active le traitement des pieces de theatre.
+    :type theatre: bool
+
+    :return: None; ecrit le TEI ou l'affiche dans le terminal.
+    :rtype: None
+    """
+    if not alto_files:
+        raise click.UsageError("Donne au moins un fichier ou dossier ALTO XML en entree.")
+
+    # On lit les metadonnees une seule fois, puis on choisit le mode de conversion.
+    metadata_rows = load_metadata(metadata_csv)
+    if is_batch_directory(alto_files):
+        if title:
+            raise click.UsageError("--title ne peut pas etre utilise avec un dossier parent.")
+        if not metadata_csv:
+            raise click.UsageError("--metadata-csv est obligatoire avec un dossier parent.")
+        convert_parent_directory(alto_files[0], output, metadata_rows, article, theatre)
+        return
+
+    expanded_alto_files = expand_alto_inputs(alto_files)
+    if not expanded_alto_files:
+        raise click.UsageError("Aucun fichier ALTO XML trouve dans l'entree.")
+
+    # Conversion simple : une entree ALTO donne un seul fichier TEI.
+    metadata = select_metadata(metadata_rows, expanded_alto_files)
+    tree = build_tei(expanded_alto_files, conversion_options(title, metadata, article, theatre))
+    if output:
+        if output.exists() and output.is_dir():
+            raise click.UsageError("-o doit etre un fichier XML pour une conversion simple.")
+        write_tei(tree, output)
+    else:
+        click.echo(ET.tostring(tree, encoding="unicode", pretty_print=True))
 
 
-        for row in reader:
-            print(f'Traitement de {row["file_name"]}')
-            root_xml = ET.Element("TEI", xmlns="http://www.tei-c.org/ns/1.0")
-            if pattern_header:
-                tei_header = fill_header(pattern_header, row)
-            else:
-                tei_header_path = pkg_resources.resource_filename("ladas2tei", "basic_header.txt")
-                tei_header = fill_header(tei_header_path, row)
-            root_xml.append(ET.fromstring(tei_header))
-            liste_block = ['<text><body xml:lang="pica-1241"><div>']
-            n = 0
-            for xml_file in sorted(os.listdir(row["file_name"])):
-                if 'xml' in xml_file and 'METS' not in xml_file:
-                    liste_block = process_document(row['file_name'], xml_file, liste_block, xslt_file, n)
-                    n+=1
-            liste_block.append("</div></body></text>")
-            block_str = "".join(liste_block)
-            try:
-                block_tei = ET.fromstring(block_str)
-            except ET.XMLSyntaxError as e:
-                print(f"Error parsing XML for {row['file_name']}: {e}")
-                with open(f'TEI/{output}_error.xml',"a") as f:
-                    f.write(ET.tostring(root_xml, encoding='unicode', pretty_print=True))
-                    f.write(f"\n\n Problematic block\n{e}\n")
-                    f.write(block_str)
-                continue
-            root_xml.append(block_tei)
-            output=os.path.basename(row["file_name"])
-            with open(f'TEI/{output}.xml', "w") as f:
-                f.write(ET.tostring(root_xml, encoding='unicode', pretty_print=True))
-        
+def is_batch_directory(alto_files: tuple[Path, ...]) -> bool:
+    """Detecte si l'entree est un dossier parent contenant plusieurs documents.
+
+    :param alto_files: chemins donnes a la commande.
+    :type alto_files: tuple[Path, ...]
+
+    :return: True si l'entree doit etre traitee en lot, sinon False.
+    :rtype: bool
+    """
+    if len(alto_files) != 1 or not alto_files[0].is_dir():
+        return False
+
+    # Un dossier parent contient des sous-dossiers documentaires, pas des pages directes.
+    direct_alto_files = expand_alto_inputs([alto_files[0]])
+    subdirectories = document_subdirectories(alto_files[0])
+    if direct_alto_files and subdirectories:
+        raise click.UsageError(
+            "Le dossier contient a la fois des ALTO pour un TEI et des sous-dossiers de TEI. "
+            "Choisis le dossier ALTO direct ou le dossier parent."
+        )
+    return bool(subdirectories)
+
+
+def convert_parent_directory(
+    parent_directory: Path,
+    output: Path | None,
+    metadata_rows: list[dict[str, str]],
+    article: bool = False,
+    theatre: bool = False,
+) -> None:
+    """Convertit chaque sous-dossier documentaire en fichier TEI.
+
+    :param parent_directory: dossier qui contient les documents.
+    :type parent_directory: Path
+    :param output: dossier de sortie, ou None pour creer TEI/.
+    :type output: Path | None
+    :param metadata_rows: lignes du CSV de metadonnees.
+    :type metadata_rows: list[dict[str, str]]
+    :param article: active le wrapper div type="article".
+    :type article: bool
+    :param theatre: active le traitement des pieces de theatre.
+    :type theatre: bool
+
+    :return: None; ecrit un fichier XML par sous-dossier.
+    :rtype: None
+    """
+    output_directory = output or parent_directory / "TEI"
+    if output_directory.suffix:
+        raise click.UsageError("-o doit etre un dossier de sortie avec un dossier parent.")
+    output_directory.mkdir(parents=True, exist_ok=True)
+
+    # Chaque sous-dossier est converti independamment.
+    for document_directory in document_subdirectories(parent_directory):
+        alto_files = expand_alto_inputs([document_directory])
+        metadata = select_metadata(metadata_rows, alto_files)
+        if not metadata:
+            raise click.UsageError(f"Aucune ligne de metadonnees trouvee pour {document_directory.name}.")
+
+        title = metadata.get("title") or document_directory.name
+        tree = build_tei(alto_files, conversion_options(title, metadata, article, theatre))
+        output_file = output_directory / f"{document_directory.name}.xml"
+        write_tei(tree, output_file)
+        click.echo(f"Ecrit {output_file}")
+
+
+def conversion_options(
+    title: str | None,
+    metadata: dict[str, str],
+    article: bool,
+    theatre: bool,
+) -> TeiConversion:
+    """Regroupe les options CLI dans un objet de conversion.
+
+    :param title: titre TEI choisi par l'utilisateur ou deduit.
+    :type title: str | None
+    :param metadata: metadonnees retenues pour le document.
+    :type metadata: dict[str, str]
+    :param article: active le wrapper div type="article".
+    :type article: bool
+    :param theatre: active le traitement des pieces de theatre.
+    :type theatre: bool
+
+    :return: TeiConversion pret a passer a build_tei().
+    :rtype: TeiConversion
+    """
+    return TeiConversion(title=title, metadata=metadata, article=article, theatre=theatre)
+
+
 if __name__ == "__main__":
     main()

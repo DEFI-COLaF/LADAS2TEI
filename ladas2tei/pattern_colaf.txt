@@ -29,7 +29,7 @@
                         <availability>
                             <licence target="https://creativecommons.org/licenses/by/4.0/"/>
                         </availability>
-                        <idno>PIC_CONCOURS__[date]_[number]</idno>
+                        <idno>PIC_CONCOURS_[date]_[number]</idno>
                     </publicationStmt>
                     <sourceDesc>
                         <bibl>
@@ -43,35 +43,35 @@
                 </fileDesc>
                 <profileDesc>
                     <langUsage>
-                        <language ident="met-oil-pic">
-                            <idno type="langue">met-oïl-pic</idno>
-                            <idno type="script">latin</idno>
-                            <name>Picard</name>
-                            <date>[date]</date>
-                            <location>
-                            <region>[region]</region>
-                            <country>[pays]</country>
-                            </location>
-                        </language>
+                        <language ident="stan-1290">
+                    <idno type="langue">stan1290</idno>
+                    <idno type="script">latn</idno>
+                    <name>Français</name>
+                </language>
+                <language ident="pica-1241">
+                    <idno type="langue">pica1241</idno>
+                    <idno type="script">latn</idno>
+                    <name>Picard</name>
+                </language>
                     </langUsage>
                     <textClass>
                         <keywords>
-                            <term type="supergenre" rend="fiction">Fiction</term>
-                            <term type="genre" rend="fiction-prose">Prose</term>
+                            <term type="supergenre" rend="fiction">[supergenre]</term>
+                            <term type="genre" rend="fiction-prose">[genre]</term>
                         </keywords>
                     </textClass>
                 </profileDesc>
                 <encodingDesc>
                     <appInfo>
-                    <application ident="ladas-27">
+                    <application ident="ladas-27" version="27">
                     <label>Layout Analysis model LADAS</label>
                     <ptr target="https://github.com/DEFI-COLaF/LADaS/"/>
                     </application>
-                    <application ident="picocr-1">
+                    <application ident="picocr-1" version="1">
                     <label>OCr Picard Model</label>
                     <ptr target="https://github.com/DEFI-COLaF/PicATR/releases/tag/picOCR"/>
                     </application>
-                    <application ident="rtk">
+                    <application ident="rtk" version="0.1">
                     <label>Release the Kraken</label>
                     <ptr target="https://github.com/PonteIneptique/rtk"/>
                     </application>
