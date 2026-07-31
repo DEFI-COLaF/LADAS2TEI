@@ -1,6 +1,23 @@
+"""Construction du TEI depuis les blocs ordonnes.
+
+`ordering.py` decide *dans quel ordre* les blocs doivent etre lus. Ce module
+decide *dans quel element TEI* les ecrire.
+
+Les deux pieces importantes sont :
+- `build_tei()`, point d'entree appele par la CLI et les tests ;
+- `ConversionContext`, qui garde l'etat courant pendant l'ecriture : div ouvert,
+  dernier paragraphe, dernier article, parole de theatre ouverte, saut de page en
+  attente, etc.
+
+Pour ajouter un label LADaS simple, modifier d'abord `mappings.py`. Ne venir ici
+que si le label a besoin d'une logique contextuelle : continuer un paragraphe,
+ouvrir un article, rattacher un titre a une figure, gerer le theatre, etc.
+"""
+
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -57,9 +74,11 @@ def build_tei(
 
     # Les pages sont ajoutees dans l'ordre, avec un pb avant leurs blocs.
     for page in pages:
-        current_div.append(page_break(page))
+        context.pending_page_break = page_break(page)
         for block in page.blocks:
             context.add_block(block)
+        context.flush_pending_theatre_head()
+        context.add_pending_page_break(context.current_div)
 
     return ET.ElementTree(root)
 
@@ -88,6 +107,10 @@ class ConversionContext:
     :type last_article: ET._Element | None
     :param open_speech: replique <sp> ouverte en mode theatre.
     :type open_speech: ET._Element | None
+    :param pending_theatre_heads: titres de theatre pouvant devenir speaker si une replique suit.
+    :type pending_theatre_heads: list[AltoBlock]
+    :param pending_page_break: saut de page a inserer au premier bloc de la page.
+    :type pending_page_break: ET._Element | None
     :param column_breaks: colonnes deja signalees par milestone.
     :type column_breaks: set[int]
     :param graphic_part_targets: parties graphiques pouvant recevoir un titre.
@@ -109,6 +132,8 @@ class ConversionContext:
     last_text_block: AltoBlock | None = None
     last_article: ET._Element | None = None
     open_speech: ET._Element | None = None
+    pending_theatre_heads: list[AltoBlock] = field(default_factory=list)
+    pending_page_break: ET._Element | None = None
     column_breaks: set[int] = field(default_factory=set)
     graphic_part_targets: list[ET._Element] = field(default_factory=list)
     theatre: bool = False
@@ -125,21 +150,22 @@ class ConversionContext:
         # Le mode theatre intercepte certains labels avant le mapping normal.
         if self.theatre and self.add_theatre_block(block):
             return
+        if self.theatre:
+            self.flush_pending_theatre_head()
 
         # Les numeros de page peuvent etre ajoutes dans le dernier paragraphe.
         if block.label == "NumberingZone":
+            self.add_pending_page_break(self.current_div)
             numbering = numbering_element(block)
-            is_page_number = ET.QName(numbering).localname == "milestone"
-            if is_page_number and self.last_text_element is not None:
-                self.last_text_element.append(numbering)
-            else:
-                self.current_div.append(numbering)
+            self.current_div.append(numbering)
             self._reset_inline_containers()
             return
 
         if is_empty_ignored_block(block):
             return
 
+        # La plupart des labels sont geres par la table declarative. Les cas
+        # speciaux restent dans les methodes parent_for()/target_for().
         spec = LADAS_TO_TEI.get(block.label, TeiElementSpec(("ab",)))
         target = self.last_text_element
         lines = lines_for_output(block)
@@ -147,14 +173,20 @@ class ConversionContext:
         # Si le bloc ne continue pas le precedent, on cree une nouvelle cible TEI.
         if not self.should_continue_previous_text(block):
             parent = self.parent_for(block, spec)
+            self.add_pending_page_break(parent)
             if is_labelled_head_tail(block):
                 target = self.target_for_labelled_head(parent, block, spec)
                 lines = (block.lines[-1],)
             else:
                 target = self.target_for(parent, block, spec)
+        else:
+            self.add_pending_page_break(self.current_div)
 
         self.add_column_milestone(block, target)
-        add_lines(target, lines, use_lb=ET.QName(target).localname != "item")
+        if ET.QName(target).localname == "lg":
+            add_verse_lines(target, lines)
+        else:
+            add_lines(target, lines, use_lb=ET.QName(target).localname != "item")
         self.remember_block(block, target)
         if ET.QName(target).localname in {"p", "ab", "quote"}:
             self.last_text_element = target
@@ -171,24 +203,30 @@ class ConversionContext:
         """
         # En mode theatre, les titres deviennent des locuteurs.
         if block.label == "RunningTitleZone":
-            milestone, running_title = theatre_running_title_elements(block)
-            if milestone is not None:
-                self.current_div.append(milestone)
+            self.flush_pending_theatre_head()
+            numbering, running_title = theatre_running_title_elements(block)
+            self.add_pending_page_break(self.current_div)
+            if numbering is not None:
+                self.current_div.append(numbering)
             self.current_div.append(running_title)
             self._reset_inline_containers()
             self.open_speech = None
             return True
 
         if block.label == "MainZone-Head":
-            speech = ET.SubElement(self.current_div, qname("sp"))
-            speaker = ET.SubElement(speech, qname("speaker"))
-            add_lines(speaker, block.lines)
-            self.open_speech = speech
+            if is_theatre_section_head(block):
+                self.flush_pending_theatre_head()
+                self.add_theatre_section_head(block)
+                return True
+            self.pending_theatre_heads.append(block)
+            self.open_speech = None
             self._reset_text_context()
             self._reset_inline_containers()
             return True
 
         if block.label == "MainZone-Lg":
+            self.open_theatre_speech()
+            self.add_pending_page_break(self.speech_parent())
             lg = ET.SubElement(self.speech_parent(), qname("lg"))
             add_verse_lines(lg, block.lines)
             self.remember_block(block, lg)
@@ -196,6 +234,8 @@ class ConversionContext:
             return True
 
         if block.label == "MainZone-PStyled":
+            self.open_theatre_speech()
+            self.add_pending_page_break(self.speech_parent())
             stage = ET.SubElement(self.speech_parent(), qname("stage"))
             add_lines(stage, block.lines)
             self.remember_block(block, stage)
@@ -203,6 +243,8 @@ class ConversionContext:
             return True
 
         if block.label in THEATRE_PARAGRAPH_LABELS:
+            self.open_theatre_speech()
+            self.add_pending_page_break(self.speech_parent())
             paragraph = ET.SubElement(self.speech_parent(), qname("p"), theatre_paragraph_attrs(block.label))
             add_lines(paragraph, block.lines)
             self.remember_block(block, paragraph)
@@ -211,6 +253,70 @@ class ConversionContext:
             return True
 
         return False
+
+    def add_theatre_section_head(self, block: AltoBlock) -> None:
+        """Ajoute un titre d'acte ou de scene dans une nouvelle division.
+
+        :param block: bloc MainZone-Head contenant acte ou scene.
+        :type block: AltoBlock
+
+        :return: None; met a jour current_div.
+        :rtype: None
+        """
+        if div_has_theatre_content(self.current_div):
+            self.current_div = ET.SubElement(self.div_parent, qname("div"))
+        self.add_pending_page_break(self.current_div)
+        head = ET.SubElement(self.current_div, qname("head"))
+        add_lines(head, block.lines)
+        self.remember_block(block, head)
+        self.open_speech = None
+        self._reset_text_context()
+        self._reset_inline_containers()
+
+    def open_theatre_speech(self) -> None:
+        """Ouvre une replique depuis le titre de theatre en attente.
+
+        :param self: contexte de conversion courant.
+        :type self: objet courant
+
+        :return: None; cree un <sp> seulement si un locuteur est en attente.
+        :rtype: None
+        """
+        if not self.pending_theatre_heads:
+            return
+        head_blocks, speaker_blocks = split_pending_theatre_heads(self.pending_theatre_heads)
+        self.pending_theatre_heads = []
+        for head_block in head_blocks:
+            self.add_pending_page_break(self.current_div)
+            head = ET.SubElement(self.current_div, qname("head"))
+            add_lines(head, head_block.lines)
+            self.remember_block(head_block, head)
+        self.add_pending_page_break(self.current_div)
+        speech = ET.SubElement(self.current_div, qname("sp"))
+        speaker = ET.SubElement(speech, qname("speaker"))
+        add_lines(speaker, combined_block_lines(speaker_blocks))
+        self.open_speech = speech
+        self._reset_inline_containers()
+
+    def flush_pending_theatre_head(self) -> None:
+        """Ecrit comme <head> un locuteur candidat qui n'a pas de replique.
+
+        :param self: contexte de conversion courant.
+        :type self: objet courant
+
+        :return: None; vide pending_theatre_head si necessaire.
+        :rtype: None
+        """
+        if not self.pending_theatre_heads:
+            return
+        for head_block in self.pending_theatre_heads:
+            self.add_pending_page_break(self.current_div)
+            head = ET.SubElement(self.current_div, qname("head"))
+            add_lines(head, head_block.lines)
+            self.remember_block(head_block, head)
+        self.pending_theatre_heads = []
+        self._reset_text_context()
+        self._reset_inline_containers()
 
     def speech_parent(self) -> ET._Element:
         """Retourne le parent ou ajouter une replique de theatre.
@@ -237,6 +343,20 @@ class ConversionContext:
         :rtype: None
         """
         self.last_by_label[block.label] = element
+
+    def add_pending_page_break(self, parent: ET._Element) -> None:
+        """Ajoute le saut de page en attente dans le bon parent TEI.
+
+        :param parent: element TEI qui recoit le debut de la page.
+        :type parent: ET._Element
+
+        :return: None; ajoute pending_page_break si necessaire.
+        :rtype: None
+        """
+        if self.pending_page_break is None:
+            return
+        parent.append(self.pending_page_break)
+        self.pending_page_break = None
 
     def _reset_text_context(self) -> None:
         """Oublie le dernier element textuel.
@@ -271,6 +391,11 @@ class ConversionContext:
         if block.label not in {"MarginTextZone-P", "MarginTextZone-PLabelled", "MarginTextZone-PStructured"}:
             self.open_note = None
 
+        if self.should_leave_article(block):
+            parent = self.current_div.getparent()
+            if parent is not None:
+                self.current_div = parent
+
         cumulative_parent = self.cumulative_parent(block.label)
         if cumulative_parent is not None:
             return cumulative_parent
@@ -289,7 +414,11 @@ class ConversionContext:
         self.open_list = None
 
         # Un nouveau titre principal ouvre une nouvelle division si la precedente contient deja du texte.
-        if block.label == "MainZone-Head" and div_has_section_content(self.current_div):
+        if (
+            block.label == "MainZone-Head"
+            and div_has_section_content(self.current_div)
+            and not is_article_div(self.current_div)
+        ):
             self.current_div = ET.SubElement(self.div_parent, qname("div"))
         elif block.label in {"Article", "Article-MultipleCol"}:
             if self.current_div.get("type") == "article" and self.current_div.getparent() is not None:
@@ -310,6 +439,21 @@ class ConversionContext:
             return self.current_div
 
         return self.current_div
+
+    def should_leave_article(self, block: AltoBlock) -> bool:
+        """Indique si un bloc doit sortir du div article courant.
+
+        :param block: bloc ALTO courant.
+        :type block: AltoBlock
+
+        :return: True si le bloc n'est pas superpose a l'article courant.
+        :rtype: bool
+        """
+        return (
+            is_article_div(self.current_div)
+            and block.label not in {"Article", "Article-Continued", "Article-MultipleCol"}
+            and block.column is None
+        )
 
     def target_for(self, parent: ET._Element, block: AltoBlock, spec: TeiElementSpec) -> ET._Element:
         """Cree ou retrouve l'element TEI qui recevra le texte du bloc.
@@ -385,7 +529,7 @@ class ConversionContext:
         :return: None; ajoute un milestone si necessaire.
         :rtype: None
         """
-        if block.column is None or block.column in self.column_breaks:
+        if block.column is None or block.column <= 1 or block.column in self.column_breaks:
             return
         if ET.QName(target).localname not in {"p", "ab", "quote"}:
             return
@@ -489,6 +633,21 @@ def nearest_article(element: ET._Element) -> ET._Element | None:
     return None
 
 
+def is_article_div(element: ET._Element) -> bool:
+    """Indique si un element est une division d'article.
+
+    :param element: element TEI a tester.
+    :type element: ET._Element
+
+    :return: True si element est un div d'article ou d'article multicolonne.
+    :rtype: bool
+    """
+    return (
+        ET.QName(element).localname == "div"
+        and element.get("type") in {"article", "article-multicolonne"}
+    )
+
+
 def div_has_section_content(div: ET._Element) -> bool:
     """Verifie si une division contient deja du contenu principal.
 
@@ -501,6 +660,22 @@ def div_has_section_content(div: ET._Element) -> bool:
     section_tags = {"p", "ab", "address", "quote", "lg", "list", "signed", "dateline"}
     for child in div:
         if ET.QName(child).localname in section_tags:
+            return True
+    return False
+
+
+def div_has_theatre_content(div: ET._Element) -> bool:
+    """Verifie si une division de theatre contient deja une section.
+
+    :param div: element TEI <div> a inspecter.
+    :type div: ET._Element
+
+    :return: True si la division contient autre chose que des sauts ou titres courants.
+    :rtype: bool
+    """
+    ignored_tags = {"pb", "fw"}
+    for child in div:
+        if ET.QName(child).localname not in ignored_tags:
             return True
     return False
 
@@ -535,6 +710,87 @@ def is_labelled_head_tail(block: AltoBlock) -> bool:
         and block.lines
         and block.lines[-1].lstrip().startswith("(")
     )
+
+
+def is_theatre_section_head(block: AltoBlock) -> bool:
+    """Detecte les titres structurels acte/scene en mode theatre.
+
+    :param block: bloc ALTO a tester.
+    :type block: AltoBlock
+
+    :return: True si le head contient acte ou scene.
+    :rtype: bool
+    """
+    if block.label != "MainZone-Head":
+        return False
+    normalized = normalize_for_detection(block.text)
+    return bool(re.search(r"\b(ACTE|SCENE)\b", normalized))
+
+
+def split_pending_theatre_heads(blocks: Sequence[AltoBlock]) -> tuple[list[AltoBlock], list[AltoBlock]]:
+    """Separe les heads d'attente entre titres simples et locuteur.
+
+    :param blocks: blocs MainZone-Head consecutifs.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Tuple (heads a ecrire, blocs composant le speaker).
+    :rtype: tuple[list[AltoBlock], list[AltoBlock]]
+    """
+    if not blocks:
+        return [], []
+    speaker_start = len(blocks) - 1
+    while speaker_start > 0 and should_merge_theatre_heads(blocks[speaker_start - 1], blocks[speaker_start]):
+        speaker_start -= 1
+    return list(blocks[:speaker_start]), list(blocks[speaker_start:])
+
+
+def should_merge_theatre_heads(previous: AltoBlock, current: AltoBlock) -> bool:
+    """Decide si deux heads consecutifs forment un meme locuteur coupe.
+
+    :param previous: premier bloc MainZone-Head.
+    :type previous: AltoBlock
+    :param current: bloc MainZone-Head suivant.
+    :type current: AltoBlock
+
+    :return: True si current prolonge previous.
+    :rtype: bool
+    """
+    previous_text = previous.text.rstrip()
+    current_text = current.text.lstrip()
+    if not previous_text or not current_text:
+        return False
+    if current_text[:1].islower():
+        return True
+    return not re.search(r"[.!?…)]$", previous_text)
+
+
+def combined_block_lines(blocks: Sequence[AltoBlock]) -> tuple[str, ...]:
+    """Concatene les lignes de plusieurs blocs ALTO.
+
+    :param blocks: blocs ALTO.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Lignes assemblees dans l'ordre.
+    :rtype: tuple[str, ...]
+    """
+    lines: list[str] = []
+    for block in blocks:
+        lines.extend(block.lines)
+    return tuple(lines)
+
+
+def normalize_for_detection(text: str) -> str:
+    """Normalise un texte OCR pour les detections lexicales simples.
+
+    :param text: texte OCR.
+    :type text: str
+
+    :return: Texte sans accents ni signes combinants, en majuscules.
+    :rtype: str
+    """
+    decomposed = unicodedata.normalize("NFKD", text)
+    without_marks = "".join(char for char in decomposed if not unicodedata.combining(char))
+    return without_marks.upper()
 
 
 THEATRE_PARAGRAPH_LABELS = {
@@ -613,9 +869,12 @@ def add_lines(element: ET._Element, lines: Iterable[str], use_lb: bool = True) -
     """
     previous = None
     for line in lines:
-        if use_lb:
+        if use_lb and previous is None:
+            element.text = (element.text or "") + line
+            previous = element
+        elif use_lb:
             previous = ET.SubElement(element, qname("lb"))
-            previous.tail = line
+            previous.tail = " " + line
         elif previous is None:
             element.text = (element.text or "") + line
             previous = element
@@ -636,8 +895,7 @@ def add_verse_lines(element: ET._Element, lines: Iterable[str]) -> None:
     """
     for line in lines:
         verse = ET.SubElement(element, qname("l"))
-        lb = ET.SubElement(verse, qname("lb"))
-        lb.tail = line
+        verse.text = line
 
 
 def theatre_running_title_elements(block: AltoBlock) -> tuple[ET._Element | None, ET._Element]:
@@ -646,19 +904,20 @@ def theatre_running_title_elements(block: AltoBlock) -> tuple[ET._Element | None
     :param block: bloc RunningTitleZone de theatre.
     :type block: AltoBlock
 
-    :return: Tuple avec milestone de page optionnel et element <fw>.
+    :return: Tuple avec fw de numerotation optionnel et element <fw>.
     :rtype: tuple[ET._Element | None, ET._Element]
     """
     lines = list(block.lines)
     first_line = lines[0] if lines else ""
     match = re.match(r"\s*(\d+)\s+(.+)", first_line)
-    milestone = None
+    numbering = None
     if match:
-        milestone = ET.Element(qname("milestone"), unit="page", n=match.group(1))
+        numbering = ET.Element(qname("fw"), type="numbering")
+        numbering.text = match.group(1)
         lines[0] = match.group(2)
     running_title = ET.Element(qname("fw"), type="runningTitle")
     add_lines(running_title, lines, use_lb=False)
-    return milestone, running_title
+    return numbering, running_title
 
 
 def numbering_element(block: AltoBlock) -> ET._Element:
@@ -667,15 +926,16 @@ def numbering_element(block: AltoBlock) -> ET._Element:
     :param block: bloc ALTO NumberingZone.
     :type block: AltoBlock
 
-    :return: Element milestone si c'est un numero de page, sinon element <fw>.
+    :return: Element <fw> de numerotation.
     :rtype: ET._Element
     """
+    fw = ET.Element(qname("fw"), type="numbering")
     text = block.text
     page_number = re.search(r"\d+", text or "")
     if page_number and re.fullmatch(r"[\W_]*\d+[\W_]*", text):
-        return ET.Element(qname("milestone"), unit="page", n=page_number.group())
-    fw = ET.Element(qname("fw"), type="numbering")
-    add_lines(fw, block.lines, use_lb=False)
+        fw.text = page_number.group()
+    else:
+        add_lines(fw, block.lines, use_lb=False)
     return fw
 
 

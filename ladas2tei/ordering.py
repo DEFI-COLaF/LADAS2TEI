@@ -1,3 +1,17 @@
+"""Ordre de lecture des blocs ALTO.
+
+Ce module ne cree pas de TEI. Il prend une page ALTO deja parse'e et renvoie les
+memes blocs dans l'ordre ou `tei.py` doit les consommer.
+
+Regle mentale utile :
+- pour une page simple, on trie par colonnes seulement les blocs qui participent
+  vraiment a une pile verticale de texte ;
+- pour une page d'article, les conteneurs `Article*` priment sur les colonnes :
+  un bloc n'entre dans un article que s'il est geometriquement superpose au
+  conteneur ;
+- le theatre reutilise le tri standard, puis `tei.py` decide locuteur/replique.
+"""
+
 from __future__ import annotations
 
 import re
@@ -10,6 +24,11 @@ from ladas2tei.models import AltoBlock, AltoPage
 TOP_PAGE_LIMIT = 250
 COLUMN_GAP = 300
 ARTICLE_COLUMN_GAP = 230
+ARTICLE_ROW_GAP = 70
+ARTICLE_CONTINUATION_EDGE_TOLERANCE = 40
+MIN_COLUMN_STACK_BLOCKS = 2
+MIN_COLUMN_BLOCK_HEIGHT = 35
+MAX_COLUMN_SPAN_RATIO = 0.62
 MIN_BLOCKS_FOR_COLUMNS = 6
 MIN_BLOCKS_PER_COLUMN = 3
 ARTICLE_LABELS = {"Article", "Article-Continued", "Article-MultipleCol"}
@@ -81,7 +100,15 @@ def is_empty_ignored_block(block: AltoBlock) -> bool:
     """
     if block.text:
         return False
-    return block.label not in {"Article", "Article-Continued", "FigureZone", "GraphicZone", "GraphicZone-Part", "TableZone"}
+    return block.label not in {
+        "Article",
+        "Article-Continued",
+        "Article-MultipleCol",
+        "FigureZone",
+        "GraphicZone",
+        "GraphicZone-Part",
+        "TableZone",
+    }
 
 
 def is_top_page_furniture(block: AltoBlock) -> bool:
@@ -152,18 +179,52 @@ def order_by_coordinates(blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
     :return: Liste de blocs en ordre de lecture.
     :rtype: list[AltoBlock]
     """
-    columns = detect_reading_columns(blocks)
+    # On commence par la detection la plus fiable : des piles verticales de
+    # blocs. Les titres pleine largeur et chapeaux n'appartiennent pas a ces
+    # piles et restent donc hors colonnes.
+    column_groups = detect_stacked_text_column_groups(blocks)
+    columns = [column_group_center(group) for group in column_groups]
+    if len(columns) < 2:
+        columns = detect_reading_columns(blocks)
+        column_groups = []
     if len(columns) < 2:
         ordered = sorted(blocks, key=layout_key)
     else:
+        assigned_blocks = [
+            assign_column_if_classable(block, columns, column_groups, horizontal_page_span(blocks))
+            for block in blocks
+        ]
+        first_column_y = min(
+            (
+                block.vpos
+                for block in assigned_blocks
+                if block.column is not None and block.vpos is not None
+            ),
+            default=None,
+        )
+        pre_column_blocks = [
+            block
+            for block in assigned_blocks
+            if block.column is None
+            and first_column_y is not None
+            and block.vpos is not None
+            and block.vpos < first_column_y
+        ]
+        column_blocks = [block for block in assigned_blocks if block.column is not None]
+        other_blocks = [
+            block
+            for block in assigned_blocks
+            if block.column is None and block not in pre_column_blocks
+        ]
         ordered = sorted(
-            (assign_detected_column(block, columns) for block in blocks),
+            column_blocks,
             key=lambda block: (
                 block.column or 1,
                 block.vpos if block.vpos is not None else 0,
                 block.hpos if block.hpos is not None else 0,
             ),
         )
+        ordered = sorted(pre_column_blocks, key=layout_key) + ordered + sorted(other_blocks, key=layout_key)
     ordered = move_question_label_before_heading(ordered)
     return ordered
 
@@ -177,6 +238,10 @@ def detect_reading_columns(blocks: Sequence[AltoBlock]) -> list[int]:
     :return: Positions moyennes des colonnes detectees, ou liste vide.
     :rtype: list[int]
     """
+    stacked_columns = detect_stacked_text_columns(blocks)
+    if len(stacked_columns) >= 2:
+        return stacked_columns
+
     positions = sorted(block.hpos for block in blocks if block.hpos is not None and block.text)
     if len(positions) < MIN_BLOCKS_FOR_COLUMNS:
         return []
@@ -233,15 +298,349 @@ def order_article_layout(blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
     columns = detect_article_columns(blocks)
     ordered_blocks = [assign_detected_column(block, columns) for block in blocks]
 
-    # On recopie la colonne du conteneur vers les blocs qu'il contient.
+    # On recopie la colonne du conteneur vers les blocs qu'il contient, puis on
+    # retire explicitement les blocs qui ne tombent dans aucun article. Cette
+    # marque `column=None` permettra a `tei.py` de sortir du div article courant.
     ordered_blocks = assign_container_columns(ordered_blocks)
+    ordered_blocks = clear_orphan_article_columns(ordered_blocks)
     ordered_blocks = normalize_article_continuations(ordered_blocks)
+    ordered_blocks = normalize_continued_article_content(ordered_blocks)
 
     # Les elements avant le premier article restent en tete de page.
     pre_article, article_blocks = split_before_first_article(ordered_blocks)
     ordered = sorted(pre_article, key=lambda block: pre_article_layout_key(block, pre_article))
-    ordered.extend(sorted(article_blocks, key=article_layout_key))
+    ordered.extend(order_article_sections(article_blocks))
     return move_question_label_before_heading(ordered)
+
+
+def order_article_sections(blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
+    """Ordonne les conteneurs d'articles et leur contenu.
+
+    :param blocks: blocs de la partie article d'une page.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Blocs ordonnes par article et par bande de lecture.
+    :rtype: list[AltoBlock]
+    """
+    if any(block.label in {"Article-MultipleCol", "Article-Continued"} for block in blocks):
+        return order_article_rows(blocks)
+    return sorted(blocks, key=article_layout_key)
+
+
+def order_article_rows(blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
+    """Trie les articles par rangées, puis de gauche à droite dans chaque rangée.
+
+    :param blocks: blocs d'articles, incluant les articles multicolonnes.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Blocs ordonnes.
+    :rtype: list[AltoBlock]
+    """
+    containers = sorted(article_containers(blocks), key=article_container_key)
+    base_containers = [container for container in containers if container.label != "Article-Continued"]
+    continued_by_target = group_continued_articles(base_containers, containers)
+    grouped_continuation_ids = {
+        id(continued)
+        for continuations in continued_by_target.values()
+        for continued in continuations
+    }
+    rows = group_article_rows(containers)
+    ordered: list[AltoBlock] = []
+    used: set[int] = set()
+    for row in rows:
+        for container in sorted(row, key=lambda block: block.hpos if block.hpos is not None else 0):
+            if id(container) in grouped_continuation_ids:
+                continue
+            ordered.extend(article_with_content(container, blocks))
+            used.add(id(container))
+            for child in contained_article_content(container, blocks):
+                used.add(id(child))
+            for continued in continued_by_target.get(id(container), []):
+                ordered.extend(article_with_content(continued, blocks))
+                used.add(id(continued))
+                for child in contained_article_content(continued, blocks):
+                    used.add(id(child))
+    leftovers = [block for block in blocks if id(block) not in used]
+    ordered.extend(sorted(leftovers, key=article_layout_key))
+    return ordered
+
+
+def group_continued_articles(
+    base_containers: Sequence[AltoBlock],
+    containers: Sequence[AltoBlock],
+) -> dict[int, list[AltoBlock]]:
+    """Rattache chaque Article-Continued a l'article precedent le plus probable.
+
+    :param base_containers: articles avec leur propre debut.
+    :type base_containers: Sequence[AltoBlock]
+    :param containers: tous les conteneurs d'article.
+    :type containers: Sequence[AltoBlock]
+
+    :return: Continuations regroupees par identifiant d'article cible.
+    :rtype: dict[int, list[AltoBlock]]
+    """
+    grouped: dict[int, list[AltoBlock]] = {}
+    for continued in [block for block in containers if block.label == "Article-Continued"]:
+        target = continued_article_target(continued, base_containers)
+        if target is None:
+            continue
+        grouped.setdefault(id(target), []).append(continued)
+    for continuations in grouped.values():
+        continuations.sort(key=lambda block: (block.column or 1, block.vpos or 0, block.hpos or 0))
+    return grouped
+
+
+def continued_article_target(
+    continued: AltoBlock,
+    candidates: Sequence[AltoBlock],
+) -> AltoBlock | None:
+    """Trouve l'article a gauche qu'une continuation doit prolonger.
+
+    :param continued: conteneur Article-Continued.
+    :type continued: AltoBlock
+    :param candidates: articles cibles possibles.
+    :type candidates: Sequence[AltoBlock]
+
+    :return: Article cible ou None.
+    :rtype: AltoBlock | None
+    """
+    viable = [
+        candidate
+        for candidate in candidates
+        if candidate.label != "Article-Continued" and is_left_continuation_target(candidate, continued)
+    ]
+    if not viable:
+        return None
+    return min(viable, key=lambda candidate: (horizontal_gap(candidate, continued), vertical_gap(candidate, continued)))
+
+
+def is_left_continuation_target(candidate: AltoBlock, continued: AltoBlock) -> bool:
+    """Verifie si une continuation peut prolonger l'article a sa gauche.
+
+    :param candidate: article candidat.
+    :type candidate: AltoBlock
+    :param continued: continuation.
+    :type continued: AltoBlock
+
+    :return: True si la geometrie ressemble a une continuation de colonne.
+    :rtype: bool
+    """
+    if None in (candidate.hpos, candidate.vpos, candidate.width, candidate.height, continued.hpos, continued.vpos):
+        return False
+    if block_left(candidate) > block_left(continued):
+        return False
+    if block_right(candidate) > block_left(continued) + ARTICLE_CONTINUATION_EDGE_TOLERANCE:
+        return False
+    gap = horizontal_gap(candidate, continued)
+    if gap > ARTICLE_COLUMN_GAP:
+        return False
+    return vertical_gap(candidate, continued) <= ARTICLE_ROW_GAP * 2
+
+
+def horizontal_gap(left: AltoBlock, right: AltoBlock) -> int:
+    """Calcule la distance horizontale entre deux blocs.
+
+    :param left: bloc de gauche.
+    :type left: AltoBlock
+    :param right: bloc de droite.
+    :type right: AltoBlock
+
+    :return: Distance entre bords, 0 si chevauchement.
+    :rtype: int
+    """
+    return max(0, block_left(right) - block_right(left))
+
+
+def vertical_gap(left: AltoBlock, right: AltoBlock) -> int:
+    """Calcule la distance verticale entre deux blocs.
+
+    :param left: premier bloc.
+    :type left: AltoBlock
+    :param right: second bloc.
+    :type right: AltoBlock
+
+    :return: Distance verticale hors chevauchement.
+    :rtype: int
+    """
+    if None in (left.vpos, left.height, right.vpos, right.height):
+        return 10**6
+    left_top = left.vpos or 0
+    right_top = right.vpos or 0
+    left_bottom = left_top + (left.height or 0)
+    right_bottom = right_top + (right.height or 0)
+    return max(0, max(left_top, right_top) - min(left_bottom, right_bottom))
+
+
+def article_containers(
+    blocks: Sequence[AltoBlock],
+    labels: set[str] | None = None,
+) -> list[AltoBlock]:
+    """Retourne les conteneurs d'article d'une liste de blocs.
+
+    :param blocks: blocs ALTO.
+    :type blocks: Sequence[AltoBlock]
+    :param labels: labels de conteneurs a garder, ou None pour tous les articles.
+    :type labels: set[str] | None
+
+    :return: Conteneurs d'article.
+    :rtype: list[AltoBlock]
+    """
+    selected_labels = labels or ARTICLE_LABELS
+    return [block for block in blocks if block.label in selected_labels]
+
+
+def group_article_rows(containers: Sequence[AltoBlock]) -> list[list[AltoBlock]]:
+    """Regroupe les conteneurs d'article par bandes verticales proches.
+
+    :param containers: conteneurs d'article.
+    :type containers: Sequence[AltoBlock]
+
+    :return: Rangées de conteneurs.
+    :rtype: list[list[AltoBlock]]
+    """
+    rows: list[list[AltoBlock]] = []
+    for container in sorted(containers, key=article_container_key):
+        if not rows or not same_article_row(container, rows[-1]):
+            rows.append([container])
+        else:
+            rows[-1].append(container)
+    return rows
+
+
+def same_article_row(container: AltoBlock, row: Sequence[AltoBlock]) -> bool:
+    """Teste si un conteneur appartient a une rangee d'articles.
+
+    :param container: conteneur a classer.
+    :type container: AltoBlock
+    :param row: rangee candidate.
+    :type row: Sequence[AltoBlock]
+
+    :return: True si les zones verticales sont proches ou se chevauchent.
+    :rtype: bool
+    """
+    if not row:
+        return False
+    return abs((container.vpos or 0) - row_top(row)) <= ARTICLE_ROW_GAP
+
+
+def row_top(row: Sequence[AltoBlock]) -> int:
+    """Calcule le haut moyen d'une rangée d'articles.
+
+    :param row: conteneurs d'une même rangée.
+    :type row: Sequence[AltoBlock]
+
+    :return: Position verticale moyenne.
+    :rtype: int
+    """
+    values = [block.vpos for block in row if block.vpos is not None]
+    if not values:
+        return 0
+    return sum(values) // len(values)
+
+
+def article_with_content(container: AltoBlock, blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
+    """Retourne un conteneur article suivi de ses blocs internes.
+
+    :param container: conteneur d'article.
+    :type container: AltoBlock
+    :param blocks: blocs ALTO de la page.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Conteneur puis contenu ordonne.
+    :rtype: list[AltoBlock]
+    """
+    content = order_article_content(container, contained_article_content(container, blocks))
+    return [container, *content]
+
+
+def order_article_content(container: AltoBlock, blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
+    """Trie le contenu direct d'un article en tenant compte de ses colonnes internes.
+
+    :param container: conteneur article.
+    :type container: AltoBlock
+    :param blocks: contenu direct du conteneur.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Blocs internes ordonnes.
+    :rtype: list[AltoBlock]
+    """
+    columns = detect_stacked_text_columns(blocks)
+    if len(columns) < 2:
+        columns = detect_article_columns(blocks)
+    if len(columns) < 2:
+        return sorted(blocks, key=article_content_key)
+
+    assigned = [assign_detected_column(block, columns) for block in blocks]
+    return sorted(
+        assigned,
+        key=lambda block: (
+            article_label_order(block),
+            block.column or 1,
+            block.vpos if block.vpos is not None else 0,
+            block.hpos if block.hpos is not None else 0,
+        ),
+    )
+
+
+def contained_article_content(container: AltoBlock, blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
+    """Trouve les blocs internes directs d'un article.
+
+    :param container: conteneur d'article.
+    :type container: AltoBlock
+    :param blocks: blocs ALTO de la page.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Blocs contenus sans autres conteneurs d'article.
+    :rtype: list[AltoBlock]
+    """
+    inner_articles = [
+        block
+        for block in article_containers(blocks)
+        if block is not container and contains_block(container, block)
+    ]
+    return [
+        block
+        for block in blocks
+        if (
+            block is not container
+            and block.label not in ARTICLE_LABELS
+            and contains_block(container, block)
+            and not any(contains_block(article, block) for article in inner_articles)
+        )
+    ]
+
+
+def article_container_key(block: AltoBlock) -> tuple[int, int, int]:
+    """Construit la cle de tri d'un conteneur d'article.
+
+    :param block: conteneur ALTO.
+    :type block: AltoBlock
+
+    :return: Tuple position verticale, horizontale, ordre de label.
+    :rtype: tuple[int, int, int]
+    """
+    return (
+        block.vpos if block.vpos is not None else 0,
+        block.hpos if block.hpos is not None else 0,
+        article_label_order(block),
+    )
+
+
+def article_content_key(block: AltoBlock) -> tuple[int, int, int, int]:
+    """Construit la cle de tri du contenu interne d'un article.
+
+    :param block: bloc interne d'un article.
+    :type block: AltoBlock
+
+    :return: Tuple ordre label, vertical, horizontal, colonne.
+    :rtype: tuple[int, int, int, int]
+    """
+    return (
+        article_label_order(block),
+        block.column or 1,
+        block.vpos if block.vpos is not None else 0,
+        block.hpos if block.hpos is not None else 0,
+    )
 
 
 def detect_article_columns(blocks: Sequence[AltoBlock]) -> list[int]:
@@ -253,12 +652,205 @@ def detect_article_columns(blocks: Sequence[AltoBlock]) -> list[int]:
     :return: Positions horizontales des colonnes detectees.
     :rtype: list[int]
     """
+    stacked_columns = detect_stacked_text_columns(
+        [block for block in blocks if block.label not in {"Article-MultipleCol"}]
+    )
+    if len(stacked_columns) >= 2:
+        return stacked_columns
+
     positions = sorted(block.hpos for block in blocks if block.hpos is not None and block.vpos is not None and block.vpos > 250)
     columns: list[int] = []
     for position in positions:
         if not columns or position - columns[-1] > ARTICLE_COLUMN_GAP:
             columns.append(position)
     return columns or [0]
+
+
+def detect_stacked_text_columns(blocks: Sequence[AltoBlock]) -> list[int]:
+    """Detecte des colonnes comme des piles verticales de gros blocs textuels.
+
+    :param blocks: blocs ALTO a analyser.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Centres horizontaux des colonnes significatives.
+    :rtype: list[int]
+    """
+    significant_groups = detect_stacked_text_column_groups(blocks)
+    return [column_group_center(group) for group in significant_groups]
+
+
+def detect_stacked_text_column_groups(blocks: Sequence[AltoBlock]) -> list[list[AltoBlock]]:
+    """Detecte les piles de blocs qui constituent vraiment des colonnes.
+
+    :param blocks: blocs ALTO a analyser.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Groupes de blocs classables en colonnes.
+    :rtype: list[list[AltoBlock]]
+    """
+    candidates = column_stack_candidates(blocks)
+    if len(candidates) < MIN_COLUMN_STACK_BLOCKS * 2:
+        return []
+
+    groups: list[list[AltoBlock]] = []
+    for block in sorted(candidates, key=lambda candidate: block_left(candidate)):
+        for group in groups:
+            if belongs_to_column_stack(block, group):
+                group.append(block)
+                break
+        else:
+            groups.append([block])
+
+    significant_groups = [group for group in groups if is_significant_column_stack(group)]
+    if len(significant_groups) < 2:
+        return []
+    return significant_groups
+
+
+def column_stack_candidates(blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
+    """Garde les blocs capables de signaler une colonne de lecture.
+
+    :param blocks: blocs ALTO.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Blocs textuels ou conteneurs verticaux utiles.
+    :rtype: list[AltoBlock]
+    """
+    page_span = horizontal_page_span(blocks)
+    candidates: list[AltoBlock] = []
+    for block in blocks:
+        if None in (block.hpos, block.vpos, block.width, block.height):
+            continue
+        if page_span and (block.width or 0) / page_span > MAX_COLUMN_SPAN_RATIO:
+            continue
+        if block.label in ARTICLE_CONTAINER_LABELS:
+            candidates.append(block)
+            continue
+        if block.text and (block.height or 0) >= MIN_COLUMN_BLOCK_HEIGHT:
+            candidates.append(block)
+    return candidates
+
+
+def block_is_page_wide(block: AltoBlock, page_span: int) -> bool:
+    """Indique si un bloc couvre trop la page pour appartenir a une colonne.
+
+    :param block: bloc ALTO.
+    :type block: AltoBlock
+    :param page_span: largeur utile de la page.
+    :type page_span: int
+
+    :return: True si le bloc est un titre ou chapeau pleine largeur probable.
+    :rtype: bool
+    """
+    return bool(page_span and block.width is not None and block.width / page_span > MAX_COLUMN_SPAN_RATIO)
+
+
+def horizontal_page_span(blocks: Sequence[AltoBlock]) -> int:
+    """Estime la largeur utile couverte par les blocs.
+
+    :param blocks: blocs ALTO.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Largeur horizontale utile, ou 0.
+    :rtype: int
+    """
+    left_values = [block.hpos for block in blocks if block.hpos is not None]
+    right_values = [
+        block.hpos + block.width
+        for block in blocks
+        if block.hpos is not None and block.width is not None
+    ]
+    if not left_values or not right_values:
+        return 0
+    return max(right_values) - min(left_values)
+
+
+def belongs_to_column_stack(block: AltoBlock, group: Sequence[AltoBlock]) -> bool:
+    """Teste si un bloc appartient a une pile verticale existante.
+
+    :param block: bloc candidat.
+    :type block: AltoBlock
+    :param group: pile de colonne candidate.
+    :type group: Sequence[AltoBlock]
+
+    :return: True si le bloc recouvre horizontalement la pile.
+    :rtype: bool
+    """
+    return any(horizontal_overlap_ratio(block, other) >= 0.35 for other in group)
+
+
+def is_significant_column_stack(group: Sequence[AltoBlock]) -> bool:
+    """Valide qu'une pile ressemble vraiment a une colonne.
+
+    :param group: blocs d'une pile candidate.
+    :type group: Sequence[AltoBlock]
+
+    :return: True si la pile contient assez de blocs ou de hauteur.
+    :rtype: bool
+    """
+    if len(group) >= MIN_COLUMN_STACK_BLOCKS:
+        return True
+    heights = [block.height or 0 for block in group]
+    return bool(heights and max(heights) >= MIN_COLUMN_BLOCK_HEIGHT * 4)
+
+
+def column_group_center(group: Sequence[AltoBlock]) -> int:
+    """Calcule le centre horizontal moyen d'une pile de colonne.
+
+    :param group: pile de blocs.
+    :type group: Sequence[AltoBlock]
+
+    :return: Centre horizontal moyen.
+    :rtype: int
+    """
+    centers = [block_left(block) + ((block.width or 0) // 2) for block in group]
+    return sum(centers) // len(centers)
+
+
+def horizontal_overlap_ratio(left: AltoBlock, right: AltoBlock) -> float:
+    """Calcule le taux de recouvrement horizontal de deux blocs.
+
+    :param left: premier bloc.
+    :type left: AltoBlock
+    :param right: second bloc.
+    :type right: AltoBlock
+
+    :return: Recouvrement rapporte a la largeur du plus petit bloc.
+    :rtype: float
+    """
+    if None in (left.hpos, left.width, right.hpos, right.width):
+        return 0.0
+    overlap = min(block_right(left), block_right(right)) - max(block_left(left), block_left(right))
+    if overlap <= 0:
+        return 0.0
+    width = min(left.width or 0, right.width or 0)
+    if width <= 0:
+        return 0.0
+    return overlap / width
+
+
+def block_left(block: AltoBlock) -> int:
+    """Retourne le bord gauche d'un bloc.
+
+    :param block: bloc ALTO.
+    :type block: AltoBlock
+
+    :return: Position horizontale.
+    :rtype: int
+    """
+    return block.hpos if block.hpos is not None else 0
+
+
+def block_right(block: AltoBlock) -> int:
+    """Retourne le bord droit d'un bloc.
+
+    :param block: bloc ALTO.
+    :type block: AltoBlock
+
+    :return: Position horizontale droite.
+    :rtype: int
+    """
+    return (block.hpos if block.hpos is not None else 0) + (block.width or 0)
 
 
 def split_before_first_article(blocks: Sequence[AltoBlock]) -> tuple[list[AltoBlock], list[AltoBlock]]:
@@ -351,6 +943,36 @@ def assign_detected_column(block: AltoBlock, columns: Sequence[int]) -> AltoBloc
     return replace(block, column=column)
 
 
+def assign_column_if_classable(
+    block: AltoBlock,
+    columns: Sequence[int],
+    column_groups: Sequence[Sequence[AltoBlock]],
+    page_span: int = 0,
+) -> AltoBlock:
+    """Associe une colonne seulement aux blocs qui recouvrent une pile detectee.
+
+    :param block: bloc ALTO a annoter.
+    :type block: AltoBlock
+    :param columns: centres des colonnes.
+    :type columns: Sequence[int]
+    :param column_groups: piles de blocs detectees.
+    :type column_groups: Sequence[Sequence[AltoBlock]]
+    :param page_span: largeur utile de la page.
+    :type page_span: int
+
+    :return: Bloc annote si classable en colonne.
+    :rtype: AltoBlock
+    """
+    if not column_groups:
+        if block_is_page_wide(block, page_span):
+            return replace(block, column=None)
+        return assign_detected_column(block, columns)
+    for index, group in enumerate(column_groups, start=1):
+        if belongs_to_column_stack(block, group):
+            return replace(block, column=index)
+    return replace(block, column=None)
+
+
 def assign_container_columns(blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
     """Transmet la colonne d'un conteneur a ses blocs internes.
 
@@ -374,6 +996,28 @@ def assign_container_columns(blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
         else:
             assigned.append(replace(block, column=container.column))
     return assigned
+
+
+def clear_orphan_article_columns(blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
+    """Retire la colonne des blocs qui ne sont superposes a aucun article.
+
+    :param blocks: blocs ALTO d'une page article.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Blocs avec les orphelins d'article marques hors colonne.
+    :rtype: list[AltoBlock]
+    """
+    containers = [block for block in blocks if block.label in ARTICLE_CONTAINER_LABELS]
+    cleaned: list[AltoBlock] = []
+    for block in blocks:
+        if block.label in ARTICLE_CONTAINER_LABELS:
+            cleaned.append(block)
+            continue
+        if any(contains_block(container, block) for container in containers):
+            cleaned.append(block)
+        else:
+            cleaned.append(replace(block, column=None))
+    return cleaned
 
 
 def smallest_containing_container(block: AltoBlock, containers: Sequence[AltoBlock]) -> AltoBlock | None:
@@ -405,6 +1049,38 @@ def normalize_article_continuations(blocks: Sequence[AltoBlock]) -> list[AltoBlo
     return [
         replace(block, label="Article-Continued")
         if block.label == "Article" and not contains_label(block, blocks, "MainZone-Head")
+        else block
+        for block in blocks
+    ]
+
+
+def normalize_continued_article_content(blocks: Sequence[AltoBlock]) -> list[AltoBlock]:
+    """Fait continuer le premier paragraphe d'un Article-Continued.
+
+    :param blocks: blocs ALTO d'une page article.
+    :type blocks: Sequence[AltoBlock]
+
+    :return: Blocs ou le premier paragraphe de continuation est marque.
+    :rtype: list[AltoBlock]
+    """
+    continued_containers = [block for block in blocks if block.label == "Article-Continued"]
+    first_text_by_container: dict[int, AltoBlock] = {}
+    for container in continued_containers:
+        text_blocks = sorted(
+            [
+                block
+                for block in blocks
+                if block.label == "MainZone-P" and contains_block(container, block)
+            ],
+            key=article_content_key,
+        )
+        if text_blocks:
+            first_text_by_container[id(container)] = text_blocks[0]
+
+    first_text_ids = {id(block) for block in first_text_by_container.values()}
+    return [
+        replace(block, label="MainZone-Continued")
+        if id(block) in first_text_ids
         else block
         for block in blocks
     ]

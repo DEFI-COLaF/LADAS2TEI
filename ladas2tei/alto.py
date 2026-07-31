@@ -10,6 +10,7 @@ from ladas2tei.constantes import ALTO_NS
 from ladas2tei.models import AltoBlock, AltoPage
 
 IGNORED_DOCUMENT_SUBDIRECTORIES = {"alto", "img", "image", "images", "tei"}
+IGNORED_ALTO_FILENAMES = {"mets.xml"}
 
 
 def natural_key(path: str | Path) -> tuple[str | int, ...]:
@@ -38,6 +39,18 @@ def sort_alto_files(paths: Iterable[str | Path]) -> list[Path]:
     return sorted((Path(path) for path in paths), key=natural_key)
 
 
+def keep_alto_file(path: str | Path) -> bool:
+    """Indique si un fichier XML doit etre traite comme une page ALTO.
+
+    :param path: chemin du fichier XML a tester.
+    :type path: str | Path
+
+    :return: True si le fichier doit etre converti.
+    :rtype: bool
+    """
+    return Path(path).name.lower() not in IGNORED_ALTO_FILENAMES
+
+
 def alto_files_in_directory(directory: str | Path) -> list[Path]:
     """Cherche les fichiers XML ALTO dans un dossier.
 
@@ -48,13 +61,15 @@ def alto_files_in_directory(directory: str | Path) -> list[Path]:
     :rtype: list[Path]
     """
     directory_path = Path(directory)
-    direct_xml_files = sort_alto_files(directory_path.glob("*.xml"))
+
+    # METS.xml decrit l'export, mais ce n'est pas une page ALTO a convertir.
+    direct_xml_files = sort_alto_files(path for path in directory_path.glob("*.xml") if keep_alto_file(path))
     if direct_xml_files:
         return direct_xml_files
 
     alto_directory = directory_path / "alto"
     if alto_directory.is_dir():
-        return sort_alto_files(alto_directory.glob("*.xml"))
+        return sort_alto_files(path for path in alto_directory.glob("*.xml") if keep_alto_file(path))
     return []
 
 

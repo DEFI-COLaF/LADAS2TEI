@@ -1,3 +1,18 @@
+"""Correspondance LADaS -> TEI.
+
+La majorite des nouveaux labels se reglent ici, sans modifier `tei.py`.
+
+Exemples :
+- `TeiElementSpec(("p",))` cree `<p>...</p>` ;
+- `TeiElementSpec(("p",), (("rend", "styled"),))` cree
+  `<p rend="styled">...</p>` ;
+- `TeiElementSpec(("figure", "formula"), (("type", "maths"),))` cree
+  `<figure type="maths"><formula>...</formula></figure>`.
+
+`CUMULATIVE_PARENT_LABELS` sert aux sous-zones qui doivent entrer dans le dernier
+conteneur compatible, par exemple un `TableZone-P` dans le dernier `TableZone`.
+"""
+
 from __future__ import annotations
 
 from ladas2tei.models import TeiElementSpec
@@ -62,7 +77,7 @@ LADAS_TO_TEI: dict[str, TeiElementSpec] = {
     # Labels d'articles de presse observes dans les exemples.
     "Article": TeiElementSpec(("div",), (("type", "article"),)),
     "Article-Continued": TeiElementSpec(("div",), (("type", "article"),)),
-    "Article-MultipleCol": TeiElementSpec(("div",), (("type", "article"),)),
+    "Article-MultipleCol": TeiElementSpec(("div",), (("type", "article-multicolonne"),)),
     "HeadArt-MultipleCol": TeiElementSpec(("head",)),
 }
 
@@ -87,5 +102,7 @@ EMPTY_TEXT_CONTAINER_LABELS = {
     "GraphicZone",
     "GraphicZone-Decoration",
     "GraphicZone-Part",
+    "SealZone",
+    "StampZone",
     "TableZone",
 }

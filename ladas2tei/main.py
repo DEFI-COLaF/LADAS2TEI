@@ -9,6 +9,12 @@ from ladas2tei.alto import document_subdirectories, expand_alto_inputs
 from ladas2tei.metadata import load_metadata, select_metadata
 from ladas2tei.models import TeiConversion
 from ladas2tei.tei import build_tei, write_tei
+from ladas2tei.validation import (
+    resolve_tei_rng_path,
+    validate_tei_files,
+    validation_report_path,
+    write_rng_report,
+)
 
 
 @click.command()
@@ -18,6 +24,11 @@ from ladas2tei.tei import build_tei, write_tei
 @click.option("--title", type=str, help="Titre TEI a utiliser dans l'en-tete.")
 @click.option("--article", is_flag=True, help='Ajoute un div type="article" autour du contenu.')
 @click.option("--theatre", is_flag=True, help="Traite les locuteurs et les vers comme une piece de theatre.")
+@click.option(
+    "--tei-rng",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    help="Schema RNG TEI global a utiliser pour valider les fichiers produits.",
+)
 def main(
     alto_files: tuple[Path, ...],
     output: Path | None,
@@ -25,6 +36,7 @@ def main(
     title: str | None,
     article: bool,
     theatre: bool,
+    tei_rng: Path | None,
 ) -> None:
     """Lance la conversion depuis la ligne de commande.
 
@@ -40,6 +52,8 @@ def main(
     :type article: bool
     :param theatre: active le traitement des pieces de theatre.
     :type theatre: bool
+    :param tei_rng: schema RNG TEI global.
+    :type tei_rng: Path | None
 
     :return: None; ecrit le TEI ou l'affiche dans le terminal.
     :rtype: None
@@ -54,7 +68,7 @@ def main(
             raise click.UsageError("--title ne peut pas etre utilise avec un dossier parent.")
         if not metadata_csv:
             raise click.UsageError("--metadata-csv est obligatoire avec un dossier parent.")
-        convert_parent_directory(alto_files[0], output, metadata_rows, article, theatre)
+        convert_parent_directory(alto_files[0], output, metadata_rows, article, theatre, tei_rng)
         return
 
     expanded_alto_files = expand_alto_inputs(alto_files)
@@ -68,6 +82,7 @@ def main(
         if output.exists() and output.is_dir():
             raise click.UsageError("-o doit etre un fichier XML pour une conversion simple.")
         write_tei(tree, output)
+        validate_written_outputs([output], output, tei_rng)
     else:
         click.echo(ET.tostring(tree, encoding="unicode", pretty_print=True))
 
@@ -101,6 +116,7 @@ def convert_parent_directory(
     metadata_rows: list[dict[str, str]],
     article: bool = False,
     theatre: bool = False,
+    tei_rng: Path | None = None,
 ) -> None:
     """Convertit chaque sous-dossier documentaire en fichier TEI.
 
@@ -114,6 +130,8 @@ def convert_parent_directory(
     :type article: bool
     :param theatre: active le traitement des pieces de theatre.
     :type theatre: bool
+    :param tei_rng: schema RNG TEI global.
+    :type tei_rng: Path | None
 
     :return: None; ecrit un fichier XML par sous-dossier.
     :rtype: None
@@ -124,6 +142,7 @@ def convert_parent_directory(
     output_directory.mkdir(parents=True, exist_ok=True)
 
     # Chaque sous-dossier est converti independamment.
+    output_files: list[Path] = []
     for document_directory in document_subdirectories(parent_directory):
         alto_files = expand_alto_inputs([document_directory])
         metadata = select_metadata(metadata_rows, alto_files)
@@ -134,7 +153,10 @@ def convert_parent_directory(
         tree = build_tei(alto_files, conversion_options(title, metadata, article, theatre))
         output_file = output_directory / f"{document_directory.name}.xml"
         write_tei(tree, output_file)
+        output_files.append(output_file)
         click.echo(f"Ecrit {output_file}")
+
+    validate_written_outputs(output_files, output_directory, tei_rng)
 
 
 def conversion_options(
@@ -158,6 +180,30 @@ def conversion_options(
     :rtype: TeiConversion
     """
     return TeiConversion(title=title, metadata=metadata, article=article, theatre=theatre)
+
+
+def validate_written_outputs(
+    output_files: list[Path],
+    output_path: Path,
+    tei_rng: Path | None,
+) -> None:
+    """Valide les TEI ecrits et produit un rapport texte.
+
+    :param output_files: fichiers TEI produits.
+    :type output_files: list[Path]
+    :param output_path: fichier ou dossier de sortie demande.
+    :type output_path: Path
+    :param tei_rng: schema RNG fourni, ou None pour detection automatique.
+    :type tei_rng: Path | None
+
+    :return: None; ecrit le rapport RNG.
+    :rtype: None
+    """
+    rng_path = resolve_tei_rng_path(tei_rng)
+    report_path = validation_report_path(output_path)
+    results = validate_tei_files(output_files, rng_path) if rng_path is not None else []
+    write_rng_report(report_path, rng_path, results)
+    click.echo(f"Rapport RNG {report_path}")
 
 
 if __name__ == "__main__":
